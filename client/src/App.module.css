@@ -1,0 +1,16 @@
+.appContainer {
+  width: 90vw;
+  margin: auto;
+}
+.boardContainer {
+    margin-top: 50px;
+    margin-bottom: 10px;
+    /* border: 1px solid black; */
+}
+
+.flexContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4f4f46;
+}

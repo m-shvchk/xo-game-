@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import classes from "./App.module.css";
-import Board from "./components/Board";
+import BoardCell from "./components/BoardCell";
+import Layout from "./components/Layout";
 
 const App = () => {
   const rowsNumRef = useRef<number>();
@@ -18,13 +19,15 @@ const App = () => {
     board[i] = new Array(columnssNumRef.current).fill(0);
   }
 
-  let rowAxisStartIdx = Math.floor(rowsNumRef.current/2)*(-1) + rowAxisModifierRef.current;
-  let columnAxisStartIdx = Math.floor(columnssNumRef.current/2)*(-1) + columnAxisModifierRef.current;
+  let rowAxisStartIdx =
+    Math.floor(rowsNumRef.current / 2) * -1 + rowAxisModifierRef.current;
+  let columnAxisStartIdx =
+    Math.floor(columnssNumRef.current / 2) * -1 + columnAxisModifierRef.current;
 
   const content = board.map((row, rowIdx) => (
-    <div className={classes.flexContainer} key={rowIdx+rowAxisStartIdx}>
+    <div className={classes.flexContainer} key={rowIdx + rowAxisStartIdx}>
       {row.map((val: number, colIdx: number) => (
-        <Board
+        <BoardCell
           key={`${rowIdx + rowAxisStartIdx}-${colIdx + columnAxisStartIdx}`}
           value={val}
         />
@@ -33,10 +36,11 @@ const App = () => {
   ));
 
   return (
-    <div className={classes.appContainer}>
-      <h1>XO game pending...</h1>
-      <div className={classes.boardContainer}>{content}</div>
-    </div>
+    <Layout>
+      <div className={classes.appContainer}>
+        <div className={classes.boardContainer}>{content}</div>
+      </div>
+    </Layout>
   );
 };
 

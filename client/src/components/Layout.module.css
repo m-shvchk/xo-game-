@@ -1,0 +1,13 @@
+.header {
+    width: 100%;
+    margin: auto;
+    padding: 1px 0 0 25px;
+    height: 15vh;
+    background: #888;
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+    font-style: italic;
+    color: white;
+  }
+  

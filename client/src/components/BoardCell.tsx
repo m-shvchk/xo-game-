@@ -1,4 +1,5 @@
 import React from 'react'
+import classes from './BoardCell.module.css'
 
 type BoardProps = {
   key: string;
@@ -7,7 +8,7 @@ type BoardProps = {
 
 const Board = (props: BoardProps) => {
   return (
-    <div>{props.value}</div>
+    <div className={classes.boardCell}></div>
   )
 }
 

@@ -1,11 +1,17 @@
 .appContainer {
   width: 90vw;
   margin: auto;
+  display: flex;
+  justify-content: center;
 }
 .boardContainer {
-    margin-top: 50px;
+    margin-top: 30px;
     margin-bottom: 10px;
-    /* border: 1px solid black; */
+    height: 75vh;
+    width: 75vh;
+    border: 5px solid #888;
+    overflow: auto;
+    /* box-sizing: content-box; */
 }
 
 .flexContainer {

@@ -1,7 +1,20 @@
-.boardCell{
-    height: 3vh;
-    min-width: 3vh;
-    box-shadow: 0.05vw 0 0 0 #4f4f46, 0 0.05vw 0 0 #4f4f46,
+.boardCell {
+  height: 3vh;
+  min-width: 3vh;
+  box-shadow: 0.05vw 0 0 0 #4f4f46, 0 0.05vw 0 0 #4f4f46,
     0.05vw 0.05vw 0 0 #4f4f46, 0.05vw 0 0 0 #4f4f46 inset,
     0 0.05vw 0 0 #4f4f46 inset;
+  display: table;  
+}
+
+.boardCell_sign{
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+.boardCell_sign___highlighted{
+    background-color: #AAA;
+}
+.boardCell_sign___red{
+    color: red;
 }

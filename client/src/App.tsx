@@ -6,8 +6,8 @@ import Layout from "./components/Layout";
 const App = () => {
   const rowsNumRef = useRef<number>();
   const columnssNumRef = useRef<number>();
-  rowsNumRef.current = 49;
-  columnssNumRef.current = 49;
+  rowsNumRef.current = 25;
+  columnssNumRef.current = 25;
 
   const rowAxisModifierRef = useRef<number>();
   const columnAxisModifierRef = useRef<number>();

@@ -6,13 +6,13 @@ type BoardProps = {
   value: number;
 }
 
-const Board = (props: BoardProps) => {
+const BoardCell = (props: BoardProps) => {
   return (
     <div className={classes.boardCell}>
-      <p className={`${classes.boardCell_sign} ${classes.boardCell_sign___red}`}>&#xd7;</p>
-      {/* <p className={`${classes.boardCell_sign} ${classes.boardCell_sign___red}`}>&#x20D8;</p> */}
+      {/* <p className={`${classes.boardCell_sign} ${classes.boardCell_sign___red}`}>&#xd7;</p> */}
+      <p className={`${classes.boardCell_sign} ${classes.boardCell_sign___red}`}>&#x20D8;</p>
     </div>
   )
 }
 
-export default Board
+export default BoardCell

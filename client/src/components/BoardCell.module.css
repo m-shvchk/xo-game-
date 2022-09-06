@@ -1,6 +1,7 @@
 .boardCell {
   height: 3vh;
-  min-width: 3vh;
+  width: 3vh;
+  font-size: 0.85rem;
   box-shadow: 0.05vw 0 0 0 #4f4f46, 0 0.05vw 0 0 #4f4f46,
     0.05vw 0.05vw 0 0 #4f4f46, 0.05vw 0 0 0 #4f4f46 inset,
     0 0.05vw 0 0 #4f4f46 inset;

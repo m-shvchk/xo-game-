@@ -15,12 +15,12 @@ const io = new Server(server, {
   },
 });
 
-// io.on("connection", (socket) => {
-//   console.log(`User Connected: ${socket.id}`);
+io.on("connection", (socket) => {
+  console.log(`User Connected: ${socket.id}`);
 
-// //
+//
 
-// });
+});
 
 server.listen(3001, () => {
   console.log("Server is running on port 3001...");

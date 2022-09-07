@@ -2,6 +2,9 @@ import { useRef } from "react";
 import classes from "./App.module.css";
 import BoardCell from "./components/BoardCell";
 import Layout from "./components/Layout";
+import { io } from 'socket.io-client'
+
+const socket = io("http://localhost:3001")
 
 const App = () => {
   const rowsNumRef = useRef<number>();

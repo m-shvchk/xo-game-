@@ -17,6 +17,11 @@ const App = () => {
   rowAxisModifierRef.current = 0;
   columnAxisModifierRef.current = 0;
 
+  const joinRoom = () => {
+      socket.emit("join_room", "room1");
+  };
+  joinRoom()
+
   const board = new Array(rowsNumRef.current);
   for (let i = 0; i < board.length; i++) {
     board[i] = new Array(columnssNumRef.current).fill(0);

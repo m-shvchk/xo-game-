@@ -15,4 +15,4 @@ const BoardCell = (props: BoardProps) => {
   )
 }
 
-export default BoardCell
+export default React.memo(BoardCell)

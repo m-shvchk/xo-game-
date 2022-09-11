@@ -1,53 +1,58 @@
-import { useRef } from "react";
 import classes from "./App.module.css";
-import BoardCell from "./components/BoardCell";
 import Layout from "./components/Layout";
-import { io } from 'socket.io-client'
+import { io } from "socket.io-client";
+import Board from "./components/Board";
+import { useEffect, useRef, useState } from "react";
 
-const socket = io("http://localhost:3001")
+export const socket = io("http://localhost:3001");
 
 const App = () => {
-  const rowsNumRef = useRef<number>();
-  const columnssNumRef = useRef<number>();
-  rowsNumRef.current = 25;
-  columnssNumRef.current = 25;
+  const [roomNumber, setRoomNumber] = useState<string>("");
+  // const [] = useState<boolean>(false)
+  const inputRef = useRef<HTMLInputElement>(null);
+  const randomRoomRef = useRef<string>("");
 
-  const rowAxisModifierRef = useRef<number>();
-  const columnAxisModifierRef = useRef<number>();
-  rowAxisModifierRef.current = 0;
-  columnAxisModifierRef.current = 0;
+  useEffect(() => inputRef.current?.focus(), []);
 
-  const joinRoom = () => {
-      socket.emit("join_room", "room1");
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setRoomNumber(e.target.value);
   };
-  joinRoom()
 
-  const board = new Array(rowsNumRef.current);
-  for (let i = 0; i < board.length; i++) {
-    board[i] = new Array(columnssNumRef.current).fill(0);
-  }
+  const joinChosenRoomHandler = () => {
+    socket.emit("join_room", roomNumber);
+  };
 
-  let rowAxisStartIdx =
-    Math.floor(rowsNumRef.current / 2) * -1 + rowAxisModifierRef.current;
-  let columnAxisStartIdx =
-    Math.floor(columnssNumRef.current / 2) * -1 + columnAxisModifierRef.current;
+  const joinRandomRoomHandler = () => {
+    randomRoomRef.current = Math.random().toString()
 
-  const content = board.map((row, rowIdx) => (
-    <div className={classes.flexContainer} key={rowIdx + rowAxisStartIdx}>
-      {row.map((val: number, colIdx: number) => (
-        <BoardCell
-          key={`${rowIdx + rowAxisStartIdx}-${colIdx + columnAxisStartIdx}`}
-          value={val}
-        />
-      ))}
-    </div>
-  ));
+    socket.emit("join_room", "room1");
+  };
+  joinRandomRoomHandler();
 
   return (
     <Layout>
-      <div className={classes.appContainer}>
-        <div className={classes.boardContainer}>{content}</div>
+      <div className={classes.buttonContainer}>
+        <form onSubmit={joinChosenRoomHandler}>
+          <input
+            ref={inputRef}
+            onChange={handleChange}
+            className={classes.buttonContainer_input}
+            type="text"
+            placeholder="enter room number"
+          ></input>
+          <button className={classes.buttonContainer_btn} type="button">
+            START GAME BY ROOM NUMBER
+          </button>
+        </form>
+        <button
+          onClick={joinRandomRoomHandler}
+          className={classes.buttonContainer_btn}
+          type="button"
+        >
+          START GAME WITH RANDOM OPPONENT
+        </button>
       </div>
+      <Board />
     </Layout>
   );
 };

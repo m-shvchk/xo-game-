@@ -1,0 +1,21 @@
+.appContainer {
+    width: 90vw;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+  }
+  .boardContainer {
+      margin-top: 20px;
+      margin-bottom: 10px;
+      height: 77vh;
+      width: 77vh;
+      border: 5px solid #888;
+      overflow: auto;
+  }
+  
+  .flexContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4f4f46;
+  }

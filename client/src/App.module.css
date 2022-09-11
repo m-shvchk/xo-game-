@@ -1,8 +1,21 @@
 .buttonContainer{
   display: flex;
-  justify-content: center;
+  align-items: center;
   flex-direction: column;
-  margin: 20px;
+  padding-top: 20vh;
+  padding-bottom: 20vh;
+  height: 85vh;
+  background-image: url(./xo-img.svg);
+}
+
+.buttonContainer form {
+  display: flex;
+  justify-content: center;
+  margin: 0 10px; 
+}
+
+.buttonContainer p {
+  font-weight: bold;
 }
 
 .buttonContainer_btn {

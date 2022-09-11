@@ -9,7 +9,6 @@ const Layout = ({children}: Props) => {
     <>
     <div className={classes.header}>
     <img src={logo} alt="logo"></img>  
-    <h1> game pending...</h1>
     </div>
     {children}
     </>

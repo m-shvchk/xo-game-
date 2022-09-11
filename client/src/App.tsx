@@ -8,7 +8,7 @@ export const socket = io("http://localhost:3001");
 
 const App = () => {
   const [roomNumber, setRoomNumber] = useState<string>("");
-  // const [] = useState<boolean>(false)
+  const [showBoard, setShowBoard] = useState<boolean>(false)
   const inputRef = useRef<HTMLInputElement>(null);
   const randomRoomRef = useRef<string>("");
 
@@ -20,6 +20,7 @@ const App = () => {
 
   const joinChosenRoomHandler = () => {
     socket.emit("join_room", roomNumber);
+    setShowBoard(true)
   };
 
   const joinRandomRoomHandler = () => {
@@ -29,30 +30,33 @@ const App = () => {
   };
   joinRandomRoomHandler();
 
+  let buttonContainerContent = (<div className={classes.buttonContainer}>
+    <form onSubmit={joinChosenRoomHandler}>
+      <input
+        ref={inputRef}
+        onChange={handleChange}
+        className={classes.buttonContainer_input}
+        type="text"
+        placeholder="enter room number"
+      ></input>
+      <button className={classes.buttonContainer_btn} type="submit">
+        START GAME BY ROOM NUMBER
+      </button>
+    </form>
+    <p>OR</p>
+    <button
+      onClick={joinRandomRoomHandler}
+      className={classes.buttonContainer_btn}
+      type="button"
+    >
+      START GAME WITH RANDOM OPPONENT
+    </button>
+  </div>)
+
   return (
     <Layout>
-      <div className={classes.buttonContainer}>
-        <form onSubmit={joinChosenRoomHandler}>
-          <input
-            ref={inputRef}
-            onChange={handleChange}
-            className={classes.buttonContainer_input}
-            type="text"
-            placeholder="enter room number"
-          ></input>
-          <button className={classes.buttonContainer_btn} type="button">
-            START GAME BY ROOM NUMBER
-          </button>
-        </form>
-        <button
-          onClick={joinRandomRoomHandler}
-          className={classes.buttonContainer_btn}
-          type="button"
-        >
-          START GAME WITH RANDOM OPPONENT
-        </button>
-      </div>
-      <Board />
+      {!showBoard && buttonContainerContent}
+      {showBoard && <Board />}
     </Layout>
   );
 };

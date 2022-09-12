@@ -18,17 +18,32 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log(`User Connected: ${socket.id}`);
 
+  // join room with known room number:
   socket.on("join_room", async (room) => {
     const socketsConnected = await io.in(room).fetchSockets();
-    console.log(socketsConnected.length)
-    if (socketsConnected.length < 2) socket.join(room)
-    else console.log("the room is full")
+    console.log(socketsConnected.length);
+    if (socketsConnected.length < 2) socket.join(room);
+    else console.log("the room is full");
+  });
+
+  // generate random room number and join room with that number: 
+  let queue = [];
+  socket.on("generate_random_room", () => {
+    if (queue.length > 0) {
+      let peer = queue.pop();
+      let room = socket.id + "#" + peer.id;
+      peer.join(room);
+      socket.join(room);
+      io.to(socket.id).emit("room_generated", room);
+      io.to(peer.id).emit("room_generated", room);
+    } else {
+      queue.push(socket);
+    }
   });
 
   socket.on("send_move", (data) => {
-    socket.to(data.room).emit("receive_move", data);
+    socket.to(data.room).emit("receive_move", data); // on frontend: socket.emit("send_move", { move, room });
   });
-
 });
 
 server.listen(3001, () => {

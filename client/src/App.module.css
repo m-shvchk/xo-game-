@@ -33,8 +33,9 @@
 
 .buttonContainer_btn:hover,
 .buttonContainer_btn:active {
-  background-color: rgba(143, 143, 126, 0.3);
+  background-color: #888;
   border-color: black;
+  color: white;
 }
 
 .buttonContainer_input{

@@ -1,9 +1,13 @@
 import { useRef } from "react";
 import classes from "./Board.module.css";
+import {Socket} from 'socket.io-client'
 import BoardCell from "./BoardCell";
 
+type boardProps = {
+    socket: Socket | null
+}
 
-const Board = () => {
+const Board = ({socket}: boardProps) => {
   const rowsNumRef = useRef<number>();
   const columnssNumRef = useRef<number>();
   rowsNumRef.current = 25;

@@ -1,16 +1,23 @@
 import classes from "./App.module.css";
 import Layout from "./components/Layout";
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import Board from "./components/Board";
 import { useEffect, useRef, useState } from "react";
-
-export const socket = io("http://localhost:3001");
 
 const App = () => {
   const [roomNumber, setRoomNumber] = useState<string>("");
   const [showBoard, setShowBoard] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  // const randomRoomRef = useRef<string>("");
+  const [socket, setSocket] = useState<Socket | null>(null);
+
+  useEffect(() => {
+    const newSocket: Socket = io("http://localhost:3001");
+    setSocket(newSocket);
+    return () => {
+      socket?.close()
+    };
+    // eslint-disable-next-line
+  }, []);
 
   useEffect(() => inputRef.current?.focus(), []);
 
@@ -18,21 +25,24 @@ const App = () => {
     setRoomNumber(e.target.value);
   };
 
-  const joinChosenRoomHandler = () => {
-    socket.emit("join_room", roomNumber);
+  const joinChosenRoomHandler = (e: React.SyntheticEvent): void => {
+    e.preventDefault();
+    socket?.emit("join_room", roomNumber);
     setShowBoard(true);
+    console.log("joined chosen room: ", roomNumber);
   };
 
   const joinRandomRoomHandler = () => {
-    socket.emit("generate_random_room");
+    socket?.emit("generate_random_room");
+    setShowBoard(true);
   };
 
   useEffect(() => {
-    socket.on("room_generated", (data) => {
+    socket?.on("room_generated", (data) => {
+      console.log("joined random room: ", data);
       setRoomNumber(data);
-      setShowBoard(true);
     });
-  })
+  }, [socket])
 
   let buttonContainerContent = (
     <div className={classes.buttonContainer}>
@@ -62,7 +72,7 @@ const App = () => {
   return (
     <Layout>
       {!showBoard && buttonContainerContent}
-      {showBoard && <Board />}
+      {showBoard && <Board socket={socket}/>}
     </Layout>
   );
 };

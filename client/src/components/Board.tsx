@@ -1,13 +1,13 @@
 import { useRef } from "react";
 import classes from "./Board.module.css";
-import {Socket} from 'socket.io-client'
+import { Socket } from "socket.io-client";
 import BoardCell from "./BoardCell";
 
 type boardProps = {
-    socket: Socket | null
-}
+  socket: Socket | null;
+};
 
-const Board = ({socket}: boardProps) => {
+const Board = ({ socket }: boardProps) => {
   const rowsNumRef = useRef<number>();
   const columnssNumRef = useRef<number>();
   rowsNumRef.current = 25;
@@ -18,6 +18,11 @@ const Board = ({socket}: boardProps) => {
   rowAxisModifierRef.current = 0;
   columnAxisModifierRef.current = 0;
 
+  const makeMoveHandler = (e: React.MouseEvent) => {
+    const id = (e.target as HTMLDivElement)?.id;
+    if (!id) return;
+
+  }
 
   const board = new Array(rowsNumRef.current);
   for (let i = 0; i < board.length; i++) {
@@ -34,6 +39,7 @@ const Board = ({socket}: boardProps) => {
       {row.map((val: number, colIdx: number) => (
         <BoardCell
           key={`${rowIdx + rowAxisStartIdx}-${colIdx + columnAxisStartIdx}`}
+          id={`${rowIdx + rowAxisStartIdx}-${colIdx + columnAxisStartIdx}`}
           value={val}
         />
       ))}
@@ -43,7 +49,9 @@ const Board = ({socket}: boardProps) => {
   return (
     <>
       <div className={classes.appContainer}>
-        <div className={classes.boardContainer}>{content}</div>
+        <div className={classes.boardContainer} onClick={makeMoveHandler}>
+          {content}
+        </div>
       </div>
     </>
   );

@@ -38,8 +38,8 @@ const Board = ({ socket }: boardProps) => {
     <div className={classes.flexContainer} key={rowIdx + rowAxisStartIdx}>
       {row.map((val: number, colIdx: number) => (
         <BoardCell
-          key={`${rowIdx + rowAxisStartIdx}-${colIdx + columnAxisStartIdx}`}
-          id={`${rowIdx + rowAxisStartIdx}-${colIdx + columnAxisStartIdx}`}
+          key={`${rowIdx + rowAxisStartIdx},${colIdx + columnAxisStartIdx}`}
+          id={`${rowIdx + rowAxisStartIdx},${colIdx + columnAxisStartIdx}`}
           value={val}
         />
       ))}

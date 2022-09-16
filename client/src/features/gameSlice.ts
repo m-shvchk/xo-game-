@@ -1,14 +1,18 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { checkWinningCondition } from "./winning_condition";
+
+export type PayloadKey = `${number},${number}`;
 
 export interface gameState {
   sign: null | 1 | 2; // 1 for "x" and 2 for "o"
-  moves: { [key: string]: number };
+  moves: { [key: PayloadKey]: number };
   lastTwoMoves: [string | null, string | null];
   myTurn: boolean;
+  winner: { [key: PayloadKey]: number };
 }
 
 interface MoveMade {
-  [key: string]: number;
+  [key: PayloadKey]: number;
 }
 
 const initialState: gameState = {
@@ -16,13 +20,13 @@ const initialState: gameState = {
   moves: {},
   lastTwoMoves: [null, null],
   myTurn: false,
+  winner: {},
 };
 
 export const gameSlice = createSlice({
   name: "game",
   initialState,
   reducers: {
-
     activateFirstPlayer: (state) => {
       state.sign = 1;
       state.myTurn = true;
@@ -40,9 +44,20 @@ export const gameSlice = createSlice({
       state.lastTwoMoves.shift();
       state.lastTwoMoves.push(payloadKey);
 
-      // check winning condition
-      
-      state.myTurn = true;
+      // check winning condition:
+      const winnerArray = checkWinningCondition(
+        state.sign === 1 ? 2 : 1,
+        state,
+        payloadKey as PayloadKey
+      );
+      if (winnerArray.length > 0) {
+        winnerArray.forEach(
+          (el) => (state.winner[el] = state.sign === 1 ? 2 : 1)
+        );
+        state.myTurn = false;
+      } else {
+        state.myTurn = true;
+      }
     },
 
     makeMove: (state, action: PayloadAction<MoveMade>) => {
@@ -52,8 +67,17 @@ export const gameSlice = createSlice({
       state.lastTwoMoves.shift();
       state.lastTwoMoves.push(payloadKey);
 
-      // check winning condition
-
+      // check winning condition:
+      const winnerArray = checkWinningCondition(
+        state.sign === 1 ? 2 : 1,
+        state,
+        payloadKey as PayloadKey
+      );
+      if (winnerArray.length > 0) {
+        winnerArray.forEach(
+          (el) => (state.winner[el] = state.sign === 1 ? 1 : 2)
+        );
+      }
       state.myTurn = false;
     },
   },

@@ -5,7 +5,8 @@ const checkCell = (
   j: number,
   sign: number,
   state: gameState,
-  temp: PayloadKey[]
+  temp: PayloadKey[],
+  final: PayloadKey[],
 ) => {
   let cell_key: PayloadKey = `${i},${j}`;
 
@@ -14,6 +15,9 @@ const checkCell = (
   } else if (state.moves[cell_key] === sign) {
     temp.push(cell_key);
   } else if (state.moves[cell_key] !== sign && temp.length < 5) {
+    temp = [];
+  } else {
+    final = final.concat(temp);
     temp = [];
   }
 };
@@ -31,7 +35,7 @@ export const checkWinningCondition = (
 
   // axis 1 (top -> bottom):
   for (let i = x, j = y - 4; j < y + 5; j++) {
-    checkCell(i, j, sign, state, temp);
+    checkCell(i, j, sign, state, temp, final);
   }
   if (temp.length < 5) temp = [];
   else {
@@ -41,7 +45,7 @@ export const checkWinningCondition = (
 
   // axis 2 (bottom-left -> top-right):
   for (let i = x - 4, j = y + 4; i < x + 5 && j > y - 5; i++ && j--) {
-    checkCell(i, j, sign, state, temp);
+    checkCell(i, j, sign, state, temp, final);
   }
   if (temp.length < 5) temp = [];
   else {
@@ -51,7 +55,7 @@ export const checkWinningCondition = (
 
   // axis 3 (left -> right):
   for (let i = x - 4, j = y; i < x + 5; i++) {
-    checkCell(i, j, sign, state, temp);
+    checkCell(i, j, sign, state, temp, final);
   }
   if (temp.length < 5) temp = [];
   else {
@@ -61,7 +65,7 @@ export const checkWinningCondition = (
 
   // axis 4 (top-left -> bottom-right):
   for (let i = x - 4, j = y - 4; i < x + 5 && j < y + 5; i++ && j++) {
-    checkCell(i, j, sign, state, temp);
+    checkCell(i, j, sign, state, temp, final);
   }
   if (temp.length < 5) temp = [];
   else {

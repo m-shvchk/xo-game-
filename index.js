@@ -49,7 +49,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("send_move", (data) => {
-    socket.to(data.room).emit("receive_move", data); // on frontend: socket.emit("send_move", { move, room });
+    socket.broadcast.to(data.roomNumber).emit("receive_move", data.moveObj); // on frontend: socket.emit("send_move", { move, room });
   });
 });
 

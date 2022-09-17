@@ -1,13 +1,19 @@
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import classes from "./Board.module.css";
 import { Socket } from "socket.io-client";
 import BoardCell from "./BoardCell";
+import {useSelector, useDispatch} from "react-redux"
+import { RootState } from "../app/store"
+import { makeMove, receiveMove } from "../features/gameSlice"
+
+// type ID = `${number},${number}`;
 
 type boardProps = {
   socket: Socket | null;
+  roomNumber: string
 };
 
-const Board = ({ socket }: boardProps) => {
+const Board = ({ socket, roomNumber }: boardProps) => {
   const rowsNumRef = useRef<number>();
   const columnssNumRef = useRef<number>();
   rowsNumRef.current = 25;
@@ -18,12 +24,32 @@ const Board = ({ socket }: boardProps) => {
   rowAxisModifierRef.current = 0;
   columnAxisModifierRef.current = 0;
 
+  const dispatch = useDispatch()
+  const myTurn = useSelector((state: RootState) => {
+    return state.game.myTurn;
+  })
+  const sign = useSelector((state: RootState) =>{
+    return state.game.sign;
+  })
+
   const makeMoveHandler = (e: React.MouseEvent) => {
     const id = (e.target as HTMLDivElement)?.id;
     if (!id) return;
+    if (!myTurn) return;
 
+    const moveObj = {id: sign}
+    dispatch(makeMove(moveObj));
+    if(socket) socket.emit('send_move', {moveObj, roomNumber}) // emit move event with moveObj and roomNumber as parameters (emiting to a room is only possible from server)
   }
 
+  // listen to "receive_move" event:
+  useEffect(()=>{
+    if(socket) socket.on("receive_move", data => {
+      dispatch(receiveMove(data))
+    })
+  }, [socket, dispatch])
+
+  
   const board = new Array(rowsNumRef.current);
   for (let i = 0; i < board.length; i++) {
     board[i] = new Array(columnssNumRef.current).fill(0);

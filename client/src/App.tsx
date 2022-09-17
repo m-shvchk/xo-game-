@@ -72,7 +72,7 @@ const App = () => {
   return (
     <Layout>
       {!showBoard && buttonContainerContent}
-      {showBoard && <Board socket={socket}/>}
+      {showBoard && <Board socket={socket} roomNumber={roomNumber}/>}
     </Layout>
   );
 };

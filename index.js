@@ -24,7 +24,11 @@ io.on("connection", (socket) => {
   socket.on("join_room", async (room) => {
     const socketsConnected = await io.in(room).fetchSockets();
     console.log(socketsConnected.length);
-    if (socketsConnected.length < 2) socket.join(room);
+    if (socketsConnected.length < 2 && socketsConnected.length !== 1) socket.join(room);
+    else if (socketsConnected.length === 1) {
+      socket.join(room);
+      io.to(socket.id).emit("activate_game", room);
+    }
     else console.log("the room is full");
   });
 
@@ -38,6 +42,7 @@ io.on("connection", (socket) => {
       socket.join(room);
       io.to(socket.id).emit("room_generated", room);
       io.to(peer.id).emit("room_generated", room);
+      io.to(socket.id).emit("activate_game", room);
     } else {
       queue.push(socket);
     }

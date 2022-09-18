@@ -12,6 +12,7 @@
     display: table-cell;
     vertical-align: middle;
     text-align: center;
+    font-weight: 900;
 }
 .boardCell_sign___highlighted{
     background-color: #AAA;

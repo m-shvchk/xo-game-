@@ -12,7 +12,7 @@ export interface gameState {
 }
 
 interface MoveMade {
-  [key: PayloadKey]: number;
+  [key: PayloadKey]: number | null;
 }
 
 const initialState: gameState = {
@@ -35,7 +35,6 @@ export const gameSlice = createSlice({
     receiveMove: (state, action: PayloadAction<MoveMade>) => {
       if (!state.sign) {
         const opponentsSign = Object.values(action.payload)[0];
-        if (opponentsSign === null) throw new Error("invalid sign received");
         state.sign = opponentsSign === 1 ? 2 : 1;
       }
       state.moves = Object.assign(state.moves, action.payload);
@@ -69,7 +68,7 @@ export const gameSlice = createSlice({
 
       // check winning condition:
       const winnerArray = checkWinningCondition(
-        state.sign === 1 ? 2 : 1,
+        state.sign === 1 ? 1 : 2,
         state,
         payloadKey as PayloadKey
       );

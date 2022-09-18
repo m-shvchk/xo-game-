@@ -5,21 +5,25 @@ type BoardProps = {
   key: string;
   id: string;
   value: number;
+  winner: boolean;
 };
 
-const BoardCell = ({value, id}: BoardProps) => {
-
-  // 'x' or 'o' sign or empty cell: 
+const BoardCell = ({ value, id, winner }: BoardProps) => {
+  // 'x' or 'o' sign or empty cell:
   let cellContent = null;
-  if(value === 1) cellContent = '\u00D7'
-  else if (value === 2) cellContent = '\u20D8'
+  if (value === 1) cellContent = "\u00D7";
+  else if (value === 2) cellContent = "\u20D8";
 
   // cell content classes (normal, highlighted, winning):
-  let cellContentClass =`${classes.boardCell_sign}`
+  let cellContentClass = winner
+    ? `${classes.boardCell_sign} ${classes.boardCell_sign___red}`
+    : `${classes.boardCell_sign}`;
 
   return (
     <div className={classes.boardCell}>
-      <p className={cellContentClass}>{cellContent}</p>
+      <p className={cellContentClass} id={id}>
+        {cellContent}
+      </p>
     </div>
   );
 };

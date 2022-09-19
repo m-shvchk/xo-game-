@@ -105,7 +105,7 @@ const Board = ({ socket, roomNumber }: boardProps) => {
   const content = board.map((row, rowIdx) => (
     <div
       className={classes.flexContainer}
-      style={{ width: `${(Math.abs(colsStart)+colsEnd+1)*3}vh` }}
+      style={{ width: `${(Math.abs(colsStart) + colsEnd + 1) * 3}vh` }}
       key={rowIdx + rowsStart}
     >
       {row.map((val: number, colIdx: number) => (
@@ -127,11 +127,39 @@ const Board = ({ socket, roomNumber }: boardProps) => {
     </div>
   ));
 
+  let signalAreaText = !sign ? "PENDING..." : "";
+  let signalAreaStyle =
+    sign && myTurn
+      ? { backgroundColor: "#07da63" }
+      : { backgroundColor: "#ff4122" };
+
   return (
     <>
       <div className={classes.appContainer}>
         <div className={classes.boardContainer} onClick={makeMoveHandler}>
           {content}
+        </div>
+        <div className={classes.boardControls}>
+          <div
+            className={classes.boardControls_signalArea}
+            style={signalAreaStyle}
+          >
+            <p>{signalAreaText}</p>
+          </div>
+          <div className={classes.boardControls_btnContainer}>
+            <button
+              type="button"
+              className={classes.boardControls_btnContainer_btn}
+            >
+              FOCUS LATEST
+            </button>
+            <button
+              type="button"
+              className={classes.boardControls_btnContainer_btn}
+            >
+              LEAVE GAME
+            </button>
+          </div>
         </div>
       </div>
     </>

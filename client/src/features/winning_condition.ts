@@ -44,7 +44,7 @@ export const checkWinningCondition = (
   }
 
   // axis 2 (bottom-left -> top-right):
-  for (let i = x - 4, j = y + 4; i < x + 5 && j > y - 5; i++ && j--) {
+  for (let i = x - 4, j = y + 4; i < x + 5 && j > y - 5; i++, j--) {
     checkCell(i, j, sign, state, temp, final);
   }
   if (temp.length < 5) temp = [];
@@ -64,7 +64,7 @@ export const checkWinningCondition = (
   }
 
   // axis 4 (top-left -> bottom-right):
-  for (let i = x - 4, j = y - 4; i < x + 5 && j < y + 5; i++ && j++) {
+  for (let i = x - 4, j = y - 4; i < x + 5 && j < y + 5; i++, j++) {
     checkCell(i, j, sign, state, temp, final);
   }
   if (temp.length < 5) temp = [];

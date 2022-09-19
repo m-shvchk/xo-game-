@@ -11,7 +11,7 @@ export interface gameState {
   winner: { [key: PayloadKey]: number };
 }
 
-interface MoveMade {
+export interface MoveMade {
   [key: PayloadKey]: number | null;
 }
 

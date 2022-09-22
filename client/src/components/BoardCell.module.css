@@ -5,18 +5,25 @@
   box-shadow: 0.05vw 0 0 0 #4f4f46, 0 0.05vw 0 0 #4f4f46,
     0.05vw 0.05vw 0 0 #4f4f46, 0.05vw 0 0 0 #4f4f46 inset,
     0 0.05vw 0 0 #4f4f46 inset;
-  display: table;  
+  display: table;
 }
 
-.boardCell_sign{
-    display: table-cell;
-    vertical-align: middle;
-    text-align: center;
-    font-weight: 900;
+.boardCell_sign {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  font-weight: 900;
 }
-.boardCell_sign___highlighted{
-    background-color: #AAA;
+/* .boardCell_sign___highlighted {
+  animation-name: highlighting;
+  animation-duration: 2s;
+  background-color: #aaa;
 }
-.boardCell_sign___red{
-    color: red;
+@keyframes highlighting {
+  from {background-color: #aaa;}
+  to {background-color: #d1d1cd;}
+} */
+
+.boardCell_sign___red {
+  color: red;
 }

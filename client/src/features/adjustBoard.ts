@@ -3,8 +3,8 @@ import { MoveMade } from './gameSlice';
 
 export const adjustBoard = (
   moveObj: MoveMade,
-  rowStart: number,
-  rowEnd: number,
+  rowsStart: number,
+  rowsEnd: number,
   colsStart: number,
   colsEnd: number,
   rowsStartSetter: React.Dispatch<React.SetStateAction<number>>,
@@ -21,16 +21,16 @@ export const adjustBoard = (
     // Adding additional rows if needed. If "x > 0" - check the index of first row, if "x < 0" - check the index of last row  
     switch (x > 0){
         case true:
-            if (rowEnd - x < 4) rowsEndSetter(x+4)
+            if (rowsEnd - x < 4) rowsEndSetter(x+4)
             break;
         case false:
-            if (Math.abs(rowStart - x) < 4) rowsStartSetter(x-4)
+            if (Math.abs(rowsStart - x) < 4) rowsStartSetter(x-4)
             break;
         default:
             break; 
     }
 
-        // Adding additional columns if needed. If "x > 0" - check the index of first column, if "x < 0" - check the index of last column:
+        // Adding additional columns if needed. If "y > 0" - check the index of first column, if "y < 0" - check the index of last column:
         switch (y > 0){
             case true:
                 if (colsEnd - y < 4) colsEndSetter(y+4)
@@ -41,6 +41,5 @@ export const adjustBoard = (
             default:
                 break; 
         }
-
 
 };

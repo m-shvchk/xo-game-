@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import classes from "./Board.module.css";
 import { Socket } from "socket.io-client";
 import BoardCell from "./BoardCell";
@@ -76,6 +76,7 @@ const Board = ({ socket, roomNumber }: boardProps) => {
   useEffect(() => {
     if (socket) {
       socket.on("receive_move", (data: MoveMade) => {
+        console.log("data: ", data);
         dispatch(receiveMove(data));
         // ADJUST BOARD SIZE:
         adjustBoard(
@@ -91,8 +92,12 @@ const Board = ({ socket, roomNumber }: boardProps) => {
         );
       });
     }
-    // eslint-disable-next-line
-  }, [socket, dispatch]);
+  }, [socket, dispatch, rowsStart, rowsEnd, colsStart, colsEnd]);
+
+  // console.log("rowStart: ", rowsStart)
+  // console.log("rowEnd: ", rowsEnd)
+  // console.log("colsStart: ", colsStart)
+  // console.log("colsEnd: ", colsEnd)
 
   let rowsLength = Math.abs(rowsStart) + rowsEnd + 1;
   let columnsLength = Math.abs(colsStart) + colsEnd + 1;
@@ -128,10 +133,9 @@ const Board = ({ socket, roomNumber }: boardProps) => {
   ));
 
   let signalAreaText = !sign ? "PENDING..." : "";
-  let signalAreaStyle =
-    sign && myTurn
-      ? { backgroundColor: "#07da63" }
-      : { backgroundColor: "#ff4122" };
+  let signalAreaStyle = {};
+  if (sign && myTurn) signalAreaStyle = { backgroundColor: "#07da63" };
+  if (sign && !myTurn) signalAreaStyle = { backgroundColor: "#ff4122" };
 
   return (
     <>

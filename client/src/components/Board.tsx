@@ -40,7 +40,7 @@ const Board = ({ socket, roomNumber }: boardProps) => {
 
   const makeMoveHandler = (e: React.MouseEvent) => {
     const id = (e.target as HTMLDivElement)?.id;
-    console.log(id);
+    console.log("coordinates sent: ", id);
     if (!id) return;
     if (!myTurn) return;
     if (id in moves) return;
@@ -76,7 +76,7 @@ const Board = ({ socket, roomNumber }: boardProps) => {
   useEffect(() => {
     if (socket) {
       socket.on("receive_move", (data: MoveMade) => {
-        console.log("data: ", data);
+        console.log("coordinates received: ", data)
         dispatch(receiveMove(data));
         // ADJUST BOARD SIZE:
         adjustBoard(
@@ -92,12 +92,11 @@ const Board = ({ socket, roomNumber }: boardProps) => {
         );
       });
     }
+    // remove listeners for "receive_move" if there is more than one:
+    if(socket?.listeners("receive_move") && socket?.listeners("receive_move").length > 1){
+      socket.listeners("receive_move").splice(0, socket?.listeners("receive_move").length - 1);
+    }
   }, [socket, dispatch, rowsStart, rowsEnd, colsStart, colsEnd]);
-
-  // console.log("rowStart: ", rowsStart)
-  // console.log("rowEnd: ", rowsEnd)
-  // console.log("colsStart: ", colsStart)
-  // console.log("colsEnd: ", colsEnd)
 
   let rowsLength = Math.abs(rowsStart) + rowsEnd + 1;
   let columnsLength = Math.abs(colsStart) + colsEnd + 1;

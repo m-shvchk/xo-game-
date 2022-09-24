@@ -1,5 +1,7 @@
 import React from "react";
 import { useRef, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../app/store";
 import classes from "./BoardCell.module.css";
 
 type BoardProps = {
@@ -11,7 +13,10 @@ type BoardProps = {
 
 const BoardCell = ({ value, id, winner }: BoardProps) => {
   const focusRef = useRef<HTMLDivElement>(null);
-  const numRef = useRef<boolean>(false);
+
+  const timeout = useSelector((state: RootState) => {
+    return state.game.highlightCellTimeout;
+  });
 
   // 'x' or 'o' sign or empty cell:
   let cellContent = null;
@@ -22,21 +27,23 @@ const BoardCell = ({ value, id, winner }: BoardProps) => {
     // highlighting and scrolling into view the last move:
     const cell = focusRef.current;
     // preventing highlighting on mount with the use of numRef:
-    if (cell && numRef.current) {
+    if (cell && value) {
       cell.style.backgroundColor = "#aaa";
       setTimeout(() => {
-        cell.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
-        console.log("running");
+        cell.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+          inline: "center",
+        });
       }, 0);
       setTimeout(() => {
         cell.style.backgroundColor = "transparent";
-      }, 3000);
-    } else {
-      numRef.current = true;
+      }, timeout);
     }
+    // eslint-disable-next-line
   }, [value]);
 
-  // cell content classes (normal, highlighted, winning):
+  // cell content classes (normal, winning):
   let cellContentClass = winner
     ? `${classes.boardCell_sign} ${classes.boardCell_sign___red}`
     : `${classes.boardCell_sign}`;

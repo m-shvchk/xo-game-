@@ -29,7 +29,10 @@ io.on("connection", (socket) => {
       socket.join(room);
       io.to(socket.id).emit("activate_game", room);
     }
-    else console.log("the room is full");
+    else {
+      console.log("the room is full");
+      // send "room is full" warning to the socket
+    }
   });
 
   // generate random room number and join room with that number:
@@ -56,6 +59,12 @@ io.on("connection", (socket) => {
   socket.on("send_move", (data) => {
     socket.broadcast.to(data.roomNumber).emit("receive_move", data.moveObj); // on frontend: socket.emit("send_move", { move, room });
   });
+
+  socket.on("leave_game", (data) => {
+    console.log("leave game request received")
+    console.log(data.roomNumber)
+    socket.broadcast.to(data.roomNumber).emit("opponent_left"); 
+  })
 });
 
 server.listen(3001, () => {

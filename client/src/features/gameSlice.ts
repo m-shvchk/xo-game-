@@ -9,6 +9,8 @@ export interface gameState {
   lastTwoMoves: [string | null, string | null];
   myTurn: boolean;
   winner: { [key: PayloadKey]: number };
+  movesInOrder: MoveMade[];
+  highlightCellTimeout?: number;
 }
 
 export interface MoveMade {
@@ -21,6 +23,8 @@ const initialState: gameState = {
   lastTwoMoves: [null, null],
   myTurn: false,
   winner: {},
+  movesInOrder: [],
+  highlightCellTimeout: 2000,
 };
 
 export const gameSlice = createSlice({
@@ -39,9 +43,9 @@ export const gameSlice = createSlice({
       }
       state.moves = Object.assign(state.moves, action.payload);
 
+      state.movesInOrder.push(action.payload);
+
       const payloadKey = Object.keys(action.payload)[0];
-      state.lastTwoMoves.shift();
-      state.lastTwoMoves.push(payloadKey);
 
       // check winning condition:
       const winnerArray = checkWinningCondition(
@@ -62,9 +66,9 @@ export const gameSlice = createSlice({
     makeMove: (state, action: PayloadAction<MoveMade>) => {
       state.moves = Object.assign(state.moves, action.payload);
 
+      state.movesInOrder.push(action.payload);
+
       const payloadKey = Object.keys(action.payload)[0];
-      state.lastTwoMoves.shift();
-      state.lastTwoMoves.push(payloadKey);
 
       // check winning condition:
       const winnerArray = checkWinningCondition(
@@ -79,9 +83,37 @@ export const gameSlice = createSlice({
       }
       state.myTurn = false;
     },
+
+    leaveGame: (state) => {
+      state.sign = null;
+      state.moves = {};
+      state.myTurn = false;
+      state.winner = {};
+      state.movesInOrder = [];
+    },
+
+    prepareRecording: (state) => {
+      state.moves = {};
+    },
+
+    reproduceMove: (state, action: PayloadAction<MoveMade>) => {
+      state.moves = Object.assign(state.moves, action.payload);
+    },
+
+    changeReproduceSpeed: (state, action: PayloadAction<number>) => {
+      state.highlightCellTimeout = action.payload
+    }
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { activateFirstPlayer, receiveMove, makeMove } = gameSlice.actions;
+export const {
+  activateFirstPlayer,
+  receiveMove,
+  makeMove,
+  leaveGame,
+  prepareRecording,
+  reproduceMove,
+  changeReproduceSpeed,
+} = gameSlice.actions;
 export default gameSlice.reducer;

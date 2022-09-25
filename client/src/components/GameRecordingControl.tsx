@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   TbPlayerSkipBack,
   TbPlayerSkipForward,
@@ -8,6 +9,8 @@ import {
 import classes from "./GameRecordingControl.module.css";
 
 const GameRecordingControl = () => {
+  const [inPlay, setInPlay] = useState<boolean>(false);
+
   return (
     <div className={classes.gameRecordContainer}>
       <div className={classes.gameRecordContainer_rangeContainer}>
@@ -18,7 +21,7 @@ const GameRecordingControl = () => {
           name="speed"
           min="500"
           max="5000"
-        //   value="2500"
+          //   value="2500"
           step="500"
         ></input>
       </div>
@@ -29,9 +32,16 @@ const GameRecordingControl = () => {
         <button type="button">
           <TbPlayerStop />
         </button>
-        <button type="button">
-          <TbPlayerPlay />
-        </button>
+        {!inPlay && (
+          <button type="button">
+            <TbPlayerPlay />
+          </button>
+        )}
+        {inPlay && (
+          <button type="button">
+            <TbPlayerPause />
+          </button>
+        )}
         <button type="button">
           <TbPlayerSkipForward />
         </button>

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import classes from "./Board.module.css";
 import { Socket } from "socket.io-client";
 import BoardCell from "./BoardCell";
-import GameRecordingControl from "./GameRecordingControl"
+import GameRecordingControl from "./GameRecordingControl";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../app/store";
 import {
@@ -80,7 +80,7 @@ const Board = ({ socket, roomNumber, setShowBoard }: boardProps) => {
   useEffect(() => {
     if (socket) {
       socket.on("receive_move", (data: MoveMade) => {
-        console.log("coordinates received: ", data)
+        console.log("coordinates received: ", data);
         dispatch(receiveMove(data));
         // ADJUST BOARD SIZE:
         adjustBoard(
@@ -97,29 +97,34 @@ const Board = ({ socket, roomNumber, setShowBoard }: boardProps) => {
       });
     }
     // remove listeners for "receive_move" if there is more than one:
-    if(socket?.listeners("receive_move") && socket?.listeners("receive_move").length > 1){
-      socket.listeners("receive_move").splice(0, socket?.listeners("receive_move").length - 1);
+    if (
+      socket?.listeners("receive_move") &&
+      socket?.listeners("receive_move").length > 1
+    ) {
+      socket
+        .listeners("receive_move")
+        .splice(0, socket?.listeners("receive_move").length - 1);
     }
   }, [socket, dispatch, rowsStart, rowsEnd, colsStart, colsEnd]);
 
   // ON LEAVE GAME:
   const leaveGameHandler = (e: React.SyntheticEvent) => {
     if (socket) socket.emit("leave_game", { roomNumber });
-     socket?.disconnect();
-     console.log("I'm leaving")
-     dispatch(leaveGame());
-     setShowBoard(false);
-     setRowsStart(-12)
-     setRowsEnd(12)
-     setColsStart(-12)
-     setColsEnd(12)
-  }
+    socket?.disconnect();
+    console.log("I'm leaving");
+    dispatch(leaveGame());
+    setShowBoard(false);
+    setRowsStart(-12);
+    setRowsEnd(12);
+    setColsStart(-12);
+    setColsEnd(12);
+  };
 
   // ON OPPONENT LEAVING GAME:
   useEffect(() => {
     if (socket) {
       socket.on("opponent_left", () => {
-        console.log("opponent left room")
+        console.log("opponent left room");
         socket?.disconnect();
       });
     }
@@ -158,10 +163,30 @@ const Board = ({ socket, roomNumber, setShowBoard }: boardProps) => {
     </div>
   ));
 
-  let signalAreaText = !sign ? "PENDING..." : "";
+  // signal area text (indicates at what point the game is: "panding", "you won", "you lost"):
+  let signalAreaText = "";
+  if (!sign) signalAreaText = "PENDING...";
+  if (Object.values(winner).length > 0 && Object.values(winner)[0] === sign) {
+    signalAreaText = "CONGRATS, YOU WON!";
+  }
+  if (Object.values(winner).length > 0 && Object.values(winner)[0] !== sign) {
+    signalAreaText = "GAME OVER, TRY AGAIN";
+  }
+  // signal area color (indicates who's turn):
   let signalAreaStyle = {};
-  if (sign && myTurn) signalAreaStyle = { backgroundColor: "#07da63" };
-  if (sign && !myTurn) signalAreaStyle = { backgroundColor: "#ff4122" };
+  if (sign && myTurn && !Object.values(winner).length) {
+    signalAreaStyle = { backgroundColor: "#07da63" };
+  }
+  if (sign && !myTurn && !Object.values(winner).length) {
+    signalAreaStyle = { backgroundColor: "#ff4122" };
+  }
+  
+  let random = Math.floor(Math.random() * 21)
+  const image = require(`../images/img${random}.png`)
+
+  if (Object.values(winner).length) {
+    signalAreaStyle = { backgroundImage: `url(${image})`, backgroundSize: "cover", opacity: "0.7" };
+  }
 
   return (
     <>

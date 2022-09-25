@@ -1,7 +1,5 @@
 import React from "react";
 import { useRef, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../app/store";
 import classes from "./BoardCell.module.css";
 
 type BoardProps = {
@@ -9,14 +7,11 @@ type BoardProps = {
   id: string;
   value: number;
   winner: boolean;
+  timer: number;
 };
 
-const BoardCell = ({ value, id, winner }: BoardProps) => {
+const BoardCell = ({ value, id, winner, timer }: BoardProps) => {
   const focusRef = useRef<HTMLDivElement>(null);
-
-  const timeout = useSelector((state: RootState) => {
-    return state.game.highlightCellTimeout;
-  });
 
   // 'x' or 'o' sign or empty cell:
   let cellContent = null;
@@ -38,7 +33,7 @@ const BoardCell = ({ value, id, winner }: BoardProps) => {
       }, 0);
       setTimeout(() => {
         cell.style.backgroundColor = "transparent";
-      }, timeout);
+      }, timer);
     }
     // eslint-disable-next-line
   }, [value]);

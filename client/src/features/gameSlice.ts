@@ -10,7 +10,6 @@ export interface gameState {
   myTurn: boolean;
   winner: { [key: PayloadKey]: number };
   movesInOrder: MoveMade[];
-  highlightCellTimeout?: number;
 }
 
 export interface MoveMade {
@@ -24,7 +23,6 @@ const initialState: gameState = {
   myTurn: false,
   winner: {},
   movesInOrder: [],
-  highlightCellTimeout: 2000,
 };
 
 export const gameSlice = createSlice({
@@ -100,9 +98,6 @@ export const gameSlice = createSlice({
       state.moves = Object.assign(state.moves, action.payload);
     },
 
-    changeReproduceSpeed: (state, action: PayloadAction<number>) => {
-      state.highlightCellTimeout = action.payload
-    }
   },
 });
 
@@ -114,6 +109,5 @@ export const {
   leaveGame,
   prepareRecording,
   reproduceMove,
-  changeReproduceSpeed,
 } = gameSlice.actions;
 export default gameSlice.reducer;

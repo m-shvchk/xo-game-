@@ -27,6 +27,7 @@ const App = () => {
 
   const joinChosenRoomHandler = (e: React.SyntheticEvent): void => {
     e.preventDefault();
+    if(roomNumber === "") return;
     socket?.emit("join_room", roomNumber);
     setShowBoard(true);
     console.log("joined chosen room: ", roomNumber);

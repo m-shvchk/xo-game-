@@ -26,6 +26,8 @@ const Board = ({ socket, roomNumber, setShowBoard }: boardProps) => {
   const [colsStart, setColsStart] = useState<number>(-12);
   const [colsEnd, setColsEnd] = useState<number>(12);
 
+  const [timer, setTimer] = useState<number>(2000) // timeout for highlighting last move
+
   const dispatch = useDispatch();
 
   const myTurn = useSelector((state: RootState) => {
@@ -158,6 +160,7 @@ const Board = ({ socket, roomNumber, setShowBoard }: boardProps) => {
               ? true
               : false
           }
+          timer={timer}
         />
       ))}
     </div>
@@ -165,24 +168,25 @@ const Board = ({ socket, roomNumber, setShowBoard }: boardProps) => {
 
   // signal area text (indicates at what point the game is: "panding", "you won", "you lost"):
   let signalAreaText = "";
+  let winArr = Object.values(winner); // won't be empty if there is a winner;
   if (!sign) signalAreaText = "PENDING...";
-  if (Object.values(winner).length > 0 && Object.values(winner)[0] === sign) {
+  if (winArr.length > 0 && winArr[0] === sign) {
     signalAreaText = "CONGRATS, YOU WON!";
   }
-  if (Object.values(winner).length > 0 && Object.values(winner)[0] !== sign) {
+  if (winArr.length > 0 && winArr[0] !== sign) {
     signalAreaText = "GAME OVER, TRY AGAIN";
   }
   // signal area color (indicates who's turn):
   let signalAreaStyle = {};
-  if (sign && myTurn && !Object.values(winner).length) {
+  if (sign && myTurn && !winArr.length) {
     signalAreaStyle = { backgroundColor: "#07da63" };
   }
-  if (sign && !myTurn && !Object.values(winner).length) {
+  if (sign && !myTurn && !winArr.length) {
     signalAreaStyle = { backgroundColor: "#ff4122" };
   }
-  
-  let random = Math.floor(Math.random() * 21)
-  const image = require(`../images/img${random}.png`)
+
+  let random = Math.floor(Math.random() * 21) // from 1 to 20 (there are 20 images)
+  const image = require(`../images/img${random}.png`) // import random image from /images folder (require common js syntax)
 
   if (Object.values(winner).length) {
     signalAreaStyle = { backgroundImage: `url(${image})`, backgroundSize: "cover", opacity: "0.7" };
@@ -202,7 +206,7 @@ const Board = ({ socket, roomNumber, setShowBoard }: boardProps) => {
             <p>{signalAreaText}</p>
           </div>
           <div className={classes.boardControls_btnContainer}>
-            <GameRecordingControl />
+            <GameRecordingControl setTimer={setTimer}/>
             <button
               type="button"
               className={classes.boardControls_btnContainer_btn}

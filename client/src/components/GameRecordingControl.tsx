@@ -8,8 +8,23 @@ import {
 } from "react-icons/tb";
 import classes from "./GameRecordingControl.module.css";
 
-const GameRecordingControl = () => {
-  const [inPlay, setInPlay] = useState<boolean>(false);
+type GameRecordingControlProps = {
+    setTimer: React.Dispatch<React.SetStateAction<number>>
+}
+
+const GameRecordingControl = ({setTimer}: GameRecordingControlProps) => {
+  const [toggleInPlay, setToggleInPlay] = useState<boolean>(false);
+
+  const playbackSpeedHandler = (e: React.SyntheticEvent) => {}
+  const runRecordHandler = (e: React.SyntheticEvent) => {
+    setToggleInPlay(true);
+  }
+  const pauseRecordHandler = (e: React.SyntheticEvent) => {
+    setToggleInPlay(false);
+  }
+  const stopRecordHandler = (e: React.SyntheticEvent) => {}
+  const moveBackRecordHandler = (e: React.SyntheticEvent) => {}
+  const moveForwardRecordHandler = (e: React.SyntheticEvent) => {}
 
   return (
     <div className={classes.gameRecordContainer}>
@@ -23,26 +38,27 @@ const GameRecordingControl = () => {
           max="5000"
           //   value="2500"
           step="500"
+          onChange = {playbackSpeedHandler}
         ></input>
       </div>
       <div className={classes.gameRecordContainer_playerContainer}>
-        <button type="button">
+        <button type="button" onClick={moveBackRecordHandler}>
           <TbPlayerSkipBack />
         </button>
-        <button type="button">
+        <button type="button" onClick={stopRecordHandler}>
           <TbPlayerStop />
         </button>
-        {!inPlay && (
-          <button type="button">
+        {!toggleInPlay && (
+          <button type="button" onClick={runRecordHandler}>
             <TbPlayerPlay />
           </button>
         )}
-        {inPlay && (
-          <button type="button">
+        {toggleInPlay && (
+          <button type="button" onClick={pauseRecordHandler}>
             <TbPlayerPause />
           </button>
         )}
-        <button type="button">
+        <button type="button" onClick={moveForwardRecordHandler}>
           <TbPlayerSkipForward />
         </button>
       </div>

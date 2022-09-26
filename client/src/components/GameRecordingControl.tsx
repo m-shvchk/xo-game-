@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   TbPlayerSkipBack,
   TbPlayerSkipForward,
@@ -12,12 +12,21 @@ type GameRecordingControlProps = {
     setTimer: React.Dispatch<React.SetStateAction<number>>
 }
 
+type T = ReturnType<typeof setTimeout>
+
 const GameRecordingControl = ({setTimer}: GameRecordingControlProps) => {
   const [toggleInPlay, setToggleInPlay] = useState<boolean>(false);
+  const moveCounterRef = useRef<number>(null);
+  const timerRef = useRef<T>(null);
+
+  let counter = moveCounterRef.current
+  let timerId = timerRef.current
+
 
   const playbackSpeedHandler = (e: React.SyntheticEvent) => {}
   const runRecordHandler = (e: React.SyntheticEvent) => {
     setToggleInPlay(true);
+    if(counter === null) counter = 0;
   }
   const pauseRecordHandler = (e: React.SyntheticEvent) => {
     setToggleInPlay(false);

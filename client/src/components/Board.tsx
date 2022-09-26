@@ -26,7 +26,8 @@ const Board = ({ socket, roomNumber, setShowBoard }: boardProps) => {
   const [colsStart, setColsStart] = useState<number>(-12);
   const [colsEnd, setColsEnd] = useState<number>(12);
 
-  const [timer, setTimer] = useState<number>(2000) // timeout for highlighting last move
+  const [timer, setTimer] = useState<number>(1000); // timeout for highlighting last move;
+  const [showPlayer, setShowPlayer] = useState<boolean>(false);
 
   const dispatch = useDispatch();
 
@@ -185,11 +186,15 @@ const Board = ({ socket, roomNumber, setShowBoard }: boardProps) => {
     signalAreaStyle = { backgroundColor: "#ff4122" };
   }
 
-  let random = Math.floor(Math.random() * 21) // from 1 to 20 (there are 20 images)
-  const image = require(`../images/img${random}.png`) // import random image from /images folder (require common js syntax)
+  let random = Math.floor(Math.random() * 20) + 1; // from 1 to 20 (there are 20 images)
+  const image = require(`../images/img${random}.png`); // import random image from /images folder (require common js syntax)
 
-  if (Object.values(winner).length) {
-    signalAreaStyle = { backgroundImage: `url(${image})`, backgroundSize: "cover", opacity: "0.7" };
+  if (winArr.length) {
+    signalAreaStyle = {
+      backgroundImage: `url(${image})`,
+      backgroundSize: "cover",
+      opacity: "0.7",
+    };
   }
 
   return (
@@ -199,14 +204,26 @@ const Board = ({ socket, roomNumber, setShowBoard }: boardProps) => {
           {content}
         </div>
         <div className={classes.boardControls}>
-          <div
-            className={classes.boardControls_signalArea}
-            style={signalAreaStyle}
-          >
-            <p>{signalAreaText}</p>
-          </div>
+          {!showPlayer && (
+            <div
+              className={classes.boardControls_signalArea}
+              style={signalAreaStyle}
+            >
+              <p>{signalAreaText}</p>
+            </div>
+          )}
+          {showPlayer && <GameRecordingControl setTimer={setTimer} />}
+
           <div className={classes.boardControls_btnContainer}>
-            <GameRecordingControl setTimer={setTimer}/>
+            {!showPlayer && !!winArr.length && (
+              <button
+                type="button"
+                className={classes.boardControls_btnContainer_btn}
+                onClick={() => setShowPlayer(true)}
+              >
+                PLAY RECORD
+              </button>
+            )}
             <button
               type="button"
               className={classes.boardControls_btnContainer_btn}

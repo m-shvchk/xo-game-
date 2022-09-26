@@ -94,10 +94,14 @@ export const gameSlice = createSlice({
       state.moves = {};
     },
 
-    reproduceMove: (state, action: PayloadAction<MoveMade>) => {
+    reproduceMoveForward: (state, action: PayloadAction<MoveMade>) => {
       state.moves = Object.assign(state.moves, action.payload);
     },
 
+    reproduceMoveBack: (state, action: PayloadAction<MoveMade>) => {
+      const keyToRemove = Object.keys(action.payload)[0] as PayloadKey;
+      delete state.moves[keyToRemove];
+    }
   },
 });
 
@@ -108,6 +112,7 @@ export const {
   makeMove,
   leaveGame,
   prepareRecording,
-  reproduceMove,
+  reproduceMoveForward,
+  reproduceMoveBack,
 } = gameSlice.actions;
 export default gameSlice.reducer;

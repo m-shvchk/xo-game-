@@ -7,33 +7,54 @@ import {
   TbPlayerPlay,
 } from "react-icons/tb";
 import classes from "./GameRecordingControl.module.css";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../app/store";
+// import {
+//   prepareRecording,
+//   reproduceMoveForward,
+//   reproduceMoveBack,
+// } from "../features/gameSlice";
+// import { MoveMade } from "../features/gameSlice";
+// import { adjustBoard } from "../features/adjustBoard";
 
 type GameRecordingControlProps = {
-    setTimer: React.Dispatch<React.SetStateAction<number>>
-}
+  setTimer: React.Dispatch<React.SetStateAction<number>>;
+  rowsStart?: number;
+  rowsEnd?: number;
+  colsStart?: number;
+  colsEnd?: number;
+  setRowsStart?: React.Dispatch<React.SetStateAction<number>>;
+  setRowsEnd?: React.Dispatch<React.SetStateAction<number>>;
+  setColsStart?: React.Dispatch<React.SetStateAction<number>>;
+  setColsEnd?: React.Dispatch<React.SetStateAction<number>>;
+  // movesInOrder?: MoveMade[];
+};
 
-type T = ReturnType<typeof setTimeout>
+type T = ReturnType<typeof setTimeout>;
 
-const GameRecordingControl = ({setTimer}: GameRecordingControlProps) => {
+const GameRecordingControl = ({ setTimer }: GameRecordingControlProps) => {
   const [toggleInPlay, setToggleInPlay] = useState<boolean>(false);
-  const moveCounterRef = useRef<number>(null);
+  const moveCounterRef = useRef<number>(0);
   const timerRef = useRef<T>(null);
 
-  let counter = moveCounterRef.current
-  let timerId = timerRef.current
+  let counter = moveCounterRef.current;
+  let timerId = timerRef.current;
 
+  const dispatch = useDispatch();
+  const movesInOrder = useSelector((state: RootState) => {
+    return state.game.movesInOrder;
+  });
 
-  const playbackSpeedHandler = (e: React.SyntheticEvent) => {}
+  const playbackSpeedHandler = (e: React.SyntheticEvent) => {};
   const runRecordHandler = (e: React.SyntheticEvent) => {
     setToggleInPlay(true);
-    if(counter === null) counter = 0;
-  }
+  };
   const pauseRecordHandler = (e: React.SyntheticEvent) => {
     setToggleInPlay(false);
-  }
-  const stopRecordHandler = (e: React.SyntheticEvent) => {}
-  const moveBackRecordHandler = (e: React.SyntheticEvent) => {}
-  const moveForwardRecordHandler = (e: React.SyntheticEvent) => {}
+  };
+  const stopRecordHandler = (e: React.SyntheticEvent) => {};
+  const moveBackRecordHandler = (e: React.SyntheticEvent) => {};
+  const moveForwardRecordHandler = (e: React.SyntheticEvent) => {};
 
   return (
     <div className={classes.gameRecordContainer}>
@@ -47,7 +68,7 @@ const GameRecordingControl = ({setTimer}: GameRecordingControlProps) => {
           max="5000"
           //   value="2500"
           step="500"
-          onChange = {playbackSpeedHandler}
+          onChange={playbackSpeedHandler}
         ></input>
       </div>
       <div className={classes.gameRecordContainer_playerContainer}>

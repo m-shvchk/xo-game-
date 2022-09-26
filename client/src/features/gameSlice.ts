@@ -6,7 +6,6 @@ export type PayloadKey = `${number},${number}`;
 export interface gameState {
   sign: null | 1 | 2; // 1 for "x" and 2 for "o"
   moves: { [key: PayloadKey]: number };
-  lastTwoMoves: [string | null, string | null];
   myTurn: boolean;
   winner: { [key: PayloadKey]: number };
   movesInOrder: MoveMade[];
@@ -19,7 +18,6 @@ export interface MoveMade {
 const initialState: gameState = {
   sign: null,
   moves: {},
-  lastTwoMoves: [null, null],
   myTurn: false,
   winner: {},
   movesInOrder: [],

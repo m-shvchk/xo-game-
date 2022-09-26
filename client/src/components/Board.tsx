@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import classes from "./Board.module.css";
 import { Socket } from "socket.io-client";
 import BoardCell from "./BoardCell";
-import GameRecordingControl from "./GameRecordingControl";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../app/store";
 import {
@@ -13,6 +12,7 @@ import {
 } from "../features/gameSlice";
 import { MoveMade } from "../features/gameSlice";
 import { adjustBoard } from "../features/adjustBoard";
+import BoardControls from "./BoardControls";
 
 type boardProps = {
   socket: Socket | null;
@@ -121,6 +121,8 @@ const Board = ({ socket, roomNumber, setShowBoard }: boardProps) => {
     setRowsEnd(12);
     setColsStart(-12);
     setColsEnd(12);
+    setShowPlayer(false);
+    setTimer(1000);
   };
 
   // ON OPPONENT LEAVING GAME:
@@ -167,72 +169,29 @@ const Board = ({ socket, roomNumber, setShowBoard }: boardProps) => {
     </div>
   ));
 
-  // signal area text (indicates at what point the game is: "panding", "you won", "you lost"):
-  let signalAreaText = "";
-  let winArr = Object.values(winner); // won't be empty if there is a winner;
-  if (!sign) signalAreaText = "PENDING...";
-  if (winArr.length > 0 && winArr[0] === sign) {
-    signalAreaText = "CONGRATS, YOU WON!";
-  }
-  if (winArr.length > 0 && winArr[0] !== sign) {
-    signalAreaText = "GAME OVER, TRY AGAIN";
-  }
-  // signal area color (indicates who's turn):
-  let signalAreaStyle = {};
-  if (sign && myTurn && !winArr.length) {
-    signalAreaStyle = { backgroundColor: "#07da63" };
-  }
-  if (sign && !myTurn && !winArr.length) {
-    signalAreaStyle = { backgroundColor: "#ff4122" };
-  }
-
-  let random = Math.floor(Math.random() * 20) + 1; // from 1 to 20 (there are 20 images)
-  const image = require(`../images/img${random}.png`); // import random image from /images folder (require common js syntax)
-
-  if (winArr.length) {
-    signalAreaStyle = {
-      backgroundImage: `url(${image})`,
-      backgroundSize: "cover",
-      opacity: "0.7",
-    };
-  }
-
   return (
     <>
       <div className={classes.appContainer}>
         <div className={classes.boardContainer} onClick={makeMoveHandler}>
           {content}
         </div>
-        <div className={classes.boardControls}>
-          {!showPlayer && (
-            <div
-              className={classes.boardControls_signalArea}
-              style={signalAreaStyle}
-            >
-              <p>{signalAreaText}</p>
-            </div>
-          )}
-          {showPlayer && <GameRecordingControl setTimer={setTimer} />}
-
-          <div className={classes.boardControls_btnContainer}>
-            {!showPlayer && !!winArr.length && (
-              <button
-                type="button"
-                className={classes.boardControls_btnContainer_btn}
-                onClick={() => setShowPlayer(true)}
-              >
-                PLAY RECORD
-              </button>
-            )}
-            <button
-              type="button"
-              className={classes.boardControls_btnContainer_btn}
-              onClick={leaveGameHandler}
-            >
-              LEAVE GAME
-            </button>
-          </div>
-        </div>
+        <BoardControls
+          setTimer={setTimer}
+          rowsStart={rowsStart}
+          rowsEnd={rowsEnd}
+          colsStart={colsStart}
+          colsEnd={colsEnd}
+          setRowsStart={setRowsStart}
+          setRowsEnd={setRowsEnd}
+          setColsStart={setColsStart}
+          setColsEnd={setColsEnd}
+          myTurn={myTurn}
+          winner={winner}
+          sign={sign}
+          leaveGameHandler={leaveGameHandler}
+          showPlayer={showPlayer}
+          setShowPlayer={setShowPlayer}
+        />
       </div>
     </>
   );

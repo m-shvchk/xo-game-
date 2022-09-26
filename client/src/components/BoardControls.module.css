@@ -1,0 +1,53 @@
+.boardControls {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    width: 20vh;
+    justify-content: space-between;
+  }
+  
+  .boardControls_signalArea {
+    width: 20vh;
+    height: 20vh;
+    border: 1px solid black;
+    border-radius: 10px;
+    display: table;
+    background-color: #bdbdbb;
+    /* background-color: #07da63;
+      background-color: #ff4122; */
+  }
+  
+  .boardControls_signalArea p {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 1rem;
+    color: white;
+    text-shadow: black 1px 0 10px;
+  }
+  
+  .boardControls_btnContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .boardControls_btnContainer_btn {
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    background-color: #bdbdbb;
+    color: black;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    border: 1px solid black;
+    cursor: pointer;
+  }
+  
+  .boardControls_btnContainer_btn:hover,
+  .boardControls_btnContainer_btn:active {
+    background-color: #888;
+    border-color: black;
+    color: white;
+  }

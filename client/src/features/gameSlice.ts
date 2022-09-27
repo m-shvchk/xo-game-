@@ -90,16 +90,32 @@ export const gameSlice = createSlice({
 
     prepareRecording: (state) => {
       state.moves = {};
+      state.winner = {};
     },
 
     reproduceMoveForward: (state, action: PayloadAction<MoveMade>) => {
       state.moves = Object.assign(state.moves, action.payload);
+
+      // check winning condition:
+      const payloadKey = Object.keys(action.payload)[0];
+      const payloadValue = Object.values(action.payload)[0];
+
+      const winnerArray = checkWinningCondition(
+        payloadValue,
+        state,
+        payloadKey as PayloadKey
+      );
+      if (winnerArray.length > 0) {
+        winnerArray.forEach((el) => (state.winner[el] = payloadValue));
+        state.myTurn = false;
+      }
     },
 
     reproduceMoveBack: (state, action: PayloadAction<MoveMade>) => {
       const keyToRemove = Object.keys(action.payload)[0] as PayloadKey;
       delete state.moves[keyToRemove];
-    }
+      state.winner = {};
+    },
   },
 });
 

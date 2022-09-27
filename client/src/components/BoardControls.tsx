@@ -1,6 +1,8 @@
 import GameRecordingControl from "./GameRecordingControl";
 import classes from "./BoardControls.module.css";
-import {PayloadKey} from "../features/gameSlice"
+import {PayloadKey} from "../features/gameSlice";
+import {useDispatch} from "react-redux";
+import {prepareRecording } from "../features/gameSlice";
 
 type BoardControlsProps = {
   setTimer: React.Dispatch<React.SetStateAction<number>>;
@@ -17,10 +19,12 @@ type BoardControlsProps = {
   sign: null | 1 | 2;
   leaveGameHandler: (e: React.SyntheticEvent) => void 
   showPlayer: boolean;
-  setShowPlayer: React.Dispatch<React.SetStateAction<boolean>>; 
+  setShowPlayer: React.Dispatch<React.SetStateAction<boolean>>;
+  timer: number; 
 };
 
 const BoardControls = ({
+  timer,  
   setTimer,
   rowsStart,
   rowsEnd,
@@ -69,6 +73,12 @@ const BoardControls = ({
     };
   }
 
+  const dispatch = useDispatch();
+  const gameRecordingHandler = () => {
+    setShowPlayer(true)
+    dispatch(prepareRecording())
+  }
+
   return (
     <div className={classes.boardControls}>
       {!showPlayer && (
@@ -81,6 +91,7 @@ const BoardControls = ({
       )}
       {showPlayer && (
         <GameRecordingControl
+          timer={timer}
           setTimer={setTimer}
           rowsStart={rowsStart}
           rowsEnd={rowsEnd}
@@ -98,9 +109,9 @@ const BoardControls = ({
           <button
             type="button"
             className={classes.boardControls_btnContainer_btn}
-            onClick={() => setShowPlayer(true)}
+            onClick={gameRecordingHandler}
           >
-            PLAY RECORD
+            GAME RECORDING
           </button>
         )}
         <button

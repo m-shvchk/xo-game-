@@ -176,6 +176,7 @@ const Board = ({ socket, roomNumber, setShowBoard }: boardProps) => {
           {content}
         </div>
         <BoardControls
+          timer={timer}
           setTimer={setTimer}
           rowsStart={rowsStart}
           rowsEnd={rowsEnd}

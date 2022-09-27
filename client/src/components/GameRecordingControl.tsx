@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   TbPlayerSkipBack,
   TbPlayerSkipForward,
@@ -9,16 +9,17 @@ import {
 import classes from "./GameRecordingControl.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
-// import {
-//   prepareRecording,
-//   reproduceMoveForward,
-//   reproduceMoveBack,
-// } from "../features/gameSlice";
+import {
+  prepareRecording,
+  reproduceMoveForward,
+  reproduceMoveBack,
+} from "../features/gameSlice";
 // import { MoveMade } from "../features/gameSlice";
 // import { adjustBoard } from "../features/adjustBoard";
 
 type GameRecordingControlProps = {
   setTimer: React.Dispatch<React.SetStateAction<number>>;
+  timer: number;
   rowsStart?: number;
   rowsEnd?: number;
   colsStart?: number;
@@ -27,34 +28,86 @@ type GameRecordingControlProps = {
   setRowsEnd?: React.Dispatch<React.SetStateAction<number>>;
   setColsStart?: React.Dispatch<React.SetStateAction<number>>;
   setColsEnd?: React.Dispatch<React.SetStateAction<number>>;
-  // movesInOrder?: MoveMade[];
 };
 
-type T = ReturnType<typeof setTimeout>;
+type T = ReturnType<typeof setInterval>;
 
-const GameRecordingControl = ({ setTimer }: GameRecordingControlProps) => {
-  const [toggleInPlay, setToggleInPlay] = useState<boolean>(false);
-  const moveCounterRef = useRef<number>(0);
-  const timerRef = useRef<T>(null);
+const GameRecordingControl = ({
+  timer,
+  setTimer,
+  rowsStart,
+  rowsEnd,
+  colsStart,
+  colsEnd,
+  setRowsStart,
+  setRowsEnd,
+  setColsStart,
+  setColsEnd,
+}: GameRecordingControlProps) => {
+  const [inPlay, setInPlay] = useState<boolean>(false);
 
-  let counter = moveCounterRef.current;
-  let timerId = timerRef.current;
+  useEffect(() => {
+    return () => setInPlay(false);
+  }, []);
+
+  const [counter, setCounter] = useState<number>(0);
+  const timerRef = useRef<T>();
 
   const dispatch = useDispatch();
   const movesInOrder = useSelector((state: RootState) => {
     return state.game.movesInOrder;
   });
+  const moves = useSelector((state: RootState) => {
+    return state.game.moves;
+  });
+  const movesDispatchedNum = Object.keys(moves).length; // number of moves already rendered on board
+  const movesTotalNum = movesInOrder.length; // number of moves made in the game
 
-  const playbackSpeedHandler = (e: React.SyntheticEvent) => {};
+  useEffect(() => {
+    if (counter < 0) {
+      setCounter(0);
+    } else if (counter > movesTotalNum) {
+      clearInterval(timerRef.current);
+      setCounter(movesTotalNum);
+    } else if (counter !==0 && movesDispatchedNum < counter) {
+      dispatch(reproduceMoveForward(movesInOrder[counter-1]));
+    } else if (movesDispatchedNum > counter) {
+      dispatch(reproduceMoveBack(movesInOrder[counter]));
+    }
+  }, [counter, movesTotalNum, movesDispatchedNum, dispatch, movesInOrder]);
+
+  const playbackSpeedHandler = (e: React.SyntheticEvent) => {
+    const target = e.target as HTMLInputElement;
+    console.log(target.value)
+    clearInterval(timerRef.current);
+    setInPlay(false);
+    setTimer(parseInt(target.value, 10))
+  };
+
   const runRecordHandler = (e: React.SyntheticEvent) => {
-    setToggleInPlay(true);
+    setInPlay(true);
+    timerRef.current = setInterval(() => {
+      setCounter((prev) => prev + 1);
+    }, timer);
   };
   const pauseRecordHandler = (e: React.SyntheticEvent) => {
-    setToggleInPlay(false);
+    setInPlay(false);
+    clearInterval(timerRef.current);
   };
-  const stopRecordHandler = (e: React.SyntheticEvent) => {};
-  const moveBackRecordHandler = (e: React.SyntheticEvent) => {};
-  const moveForwardRecordHandler = (e: React.SyntheticEvent) => {};
+  const stopRecordHandler = (e: React.SyntheticEvent) => {
+    setInPlay(false);
+    clearInterval(timerRef.current);
+    setCounter(0);
+    dispatch(prepareRecording());
+  };
+  const moveBackRecordHandler = (e: React.SyntheticEvent) => {
+    clearInterval(timerRef.current);
+    setCounter((prev) => prev - 1);
+  };
+  const moveForwardRecordHandler = (e: React.SyntheticEvent) => {
+    clearInterval(timerRef.current);
+    setCounter((prev) => prev + 1);
+  };
 
   return (
     <div className={classes.gameRecordContainer}>
@@ -65,8 +118,8 @@ const GameRecordingControl = ({ setTimer }: GameRecordingControlProps) => {
           id="speed"
           name="speed"
           min="500"
-          max="5000"
-          //   value="2500"
+          max="3500"
+          value={timer}
           step="500"
           onChange={playbackSpeedHandler}
         ></input>
@@ -78,12 +131,12 @@ const GameRecordingControl = ({ setTimer }: GameRecordingControlProps) => {
         <button type="button" onClick={stopRecordHandler}>
           <TbPlayerStop />
         </button>
-        {!toggleInPlay && (
+        {!inPlay && (
           <button type="button" onClick={runRecordHandler}>
             <TbPlayerPlay />
           </button>
         )}
-        {toggleInPlay && (
+        {inPlay && (
           <button type="button" onClick={pauseRecordHandler}>
             <TbPlayerPause />
           </button>

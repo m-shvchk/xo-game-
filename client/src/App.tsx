@@ -9,15 +9,16 @@ const App = () => {
   const [showBoard, setShowBoard] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const [socket, setSocket] = useState<Socket | null>(null);
+  const [relaunchToggle, setRelaunchToggle] = useState<boolean>(false);
 
   useEffect(() => {
     const newSocket: Socket = io("http://localhost:3001");
     setSocket(newSocket);
     return () => {
-      socket?.close()
+      socket?.close();
     };
     // eslint-disable-next-line
-  }, []);
+  }, [relaunchToggle]);
 
   useEffect(() => inputRef.current?.focus(), []);
 
@@ -27,7 +28,7 @@ const App = () => {
 
   const joinChosenRoomHandler = (e: React.SyntheticEvent): void => {
     e.preventDefault();
-    if(roomNumber === "") return;
+    if (roomNumber === "") return;
     socket?.emit("join_room", roomNumber);
     setShowBoard(true);
     console.log("joined chosen room: ", roomNumber);
@@ -43,7 +44,7 @@ const App = () => {
       console.log("joined random room: ", data);
       setRoomNumber(data);
     });
-  }, [socket])
+  }, [socket]);
 
   let buttonContainerContent = (
     <div className={classes.buttonContainer}>
@@ -73,7 +74,15 @@ const App = () => {
   return (
     <Layout>
       {!showBoard && buttonContainerContent}
-      {showBoard && <Board socket={socket} roomNumber={roomNumber} setShowBoard={setShowBoard}/>}
+      {showBoard && (
+        <Board
+          socket={socket}
+          roomNumber={roomNumber}
+          setShowBoard={setShowBoard}
+          setRelaunchToggle={setRelaunchToggle}
+          relaunchToggle={relaunchToggle}
+        />
+      )}
     </Layout>
   );
 };

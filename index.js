@@ -48,11 +48,15 @@ io.on("connection", (socket) => {
       io.to(socket.id).emit("activate_game", room);
     } else {
       queue.push(socket);
+      console.log("inside generate room: ", queue.length) /////////////////////////////
+
     }
 
     // logic on user disconnecting (remove from the queue for random players):
     socket.on("disconnecting", () => {
       queue = queue.filter(item => item.id !== socket.id)
+      console.log("inside disconnection event: ", queue.length) /////////////////////////
+
     });
   });
 
@@ -64,6 +68,8 @@ io.on("connection", (socket) => {
     console.log("leave game request received")
     console.log(data.roomNumber)
     socket.broadcast.to(data.roomNumber).emit("opponent_left"); 
+    console.log("inside leave game event: ", queue.length) //////////////////////////
+
   })
 });
 

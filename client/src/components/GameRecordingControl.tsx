@@ -20,14 +20,6 @@ import {
 type GameRecordingControlProps = {
   setTimer: React.Dispatch<React.SetStateAction<number>>;
   timer: number;
-  rowsStart?: number;
-  rowsEnd?: number;
-  colsStart?: number;
-  colsEnd?: number;
-  setRowsStart?: React.Dispatch<React.SetStateAction<number>>;
-  setRowsEnd?: React.Dispatch<React.SetStateAction<number>>;
-  setColsStart?: React.Dispatch<React.SetStateAction<number>>;
-  setColsEnd?: React.Dispatch<React.SetStateAction<number>>;
 };
 
 type T = ReturnType<typeof setInterval>;
@@ -35,14 +27,6 @@ type T = ReturnType<typeof setInterval>;
 const GameRecordingControl = ({
   timer,
   setTimer,
-  rowsStart,
-  rowsEnd,
-  colsStart,
-  colsEnd,
-  setRowsStart,
-  setRowsEnd,
-  setColsStart,
-  setColsEnd,
 }: GameRecordingControlProps) => {
   const [inPlay, setInPlay] = useState<boolean>(false);
 

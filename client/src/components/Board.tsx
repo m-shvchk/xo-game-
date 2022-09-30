@@ -10,25 +10,27 @@ import {
   activateFirstPlayer,
   leaveGame,
 } from "../features/gameSlice";
+import { adjustBoard, switchToDefaults } from "../features/uiSlice";
 import { MoveMade } from "../features/gameSlice";
-import { adjustBoard } from "../features/adjustBoard";
 import BoardControls from "./BoardControls";
 
 type boardProps = {
   socket: Socket | null;
   roomNumber: string;
   setShowBoard: React.Dispatch<React.SetStateAction<boolean>>;
+  setRelaunchToggle: React.Dispatch<React.SetStateAction<boolean>>;
+  relaunchToggle: boolean;
 };
 
-const Board = ({ socket, roomNumber, setShowBoard }: boardProps) => {
-  const [rowsStart, setRowsStart] = useState<number>(-12);
-  const [rowsEnd, setRowsEnd] = useState<number>(12);
-  const [colsStart, setColsStart] = useState<number>(-12);
-  const [colsEnd, setColsEnd] = useState<number>(12);
-
+const Board = ({
+  socket,
+  roomNumber,
+  setShowBoard,
+  setRelaunchToggle,
+  relaunchToggle,
+}: boardProps) => {
+  
   const [timer, setTimer] = useState<number>(1000); // timeout for highlighting last move;
-  const [showPlayer, setShowPlayer] = useState<boolean>(false);
-
   const dispatch = useDispatch();
 
   const myTurn = useSelector((state: RootState) => {
@@ -42,6 +44,18 @@ const Board = ({ socket, roomNumber, setShowBoard }: boardProps) => {
   });
   const winner = useSelector((state: RootState) => {
     return state.game.winner;
+  });
+  const rowsStart = useSelector((state: RootState) => {
+    return state.ui.rowsStart;
+  });
+  const rowsEnd = useSelector((state: RootState) => {
+    return state.ui.rowsEnd;
+  });
+  const colsStart = useSelector((state: RootState) => {
+    return state.ui.colsStart;
+  });
+  const colsEnd = useSelector((state: RootState) => {
+    return state.ui.colsEnd;
   });
 
   // ON MAKING MOVE (MOUSE EVENT):
@@ -57,17 +71,7 @@ const Board = ({ socket, roomNumber, setShowBoard }: boardProps) => {
     if (socket) socket.emit("send_move", { moveObj, roomNumber }); // emit move event with moveObj and roomNumber as parameters (emiting to a room is only possible from server)
 
     // ADJUST BOARD SIZE:
-    adjustBoard(
-      moveObj,
-      rowsStart,
-      rowsEnd,
-      colsStart,
-      colsEnd,
-      setRowsStart,
-      setRowsEnd,
-      setColsStart,
-      setColsEnd
-    );
+    dispatch(adjustBoard(moveObj));
   };
 
   // ON LISTEN TO "ACTIVATE_GAME" EVENT (FIRST MOVE):
@@ -86,17 +90,7 @@ const Board = ({ socket, roomNumber, setShowBoard }: boardProps) => {
         console.log("coordinates received: ", data);
         dispatch(receiveMove(data));
         // ADJUST BOARD SIZE:
-        adjustBoard(
-          data,
-          rowsStart,
-          rowsEnd,
-          colsStart,
-          colsEnd,
-          setRowsStart,
-          setRowsEnd,
-          setColsStart,
-          setColsEnd
-        );
+        dispatch(adjustBoard(data));
       });
     }
     // remove listeners for "receive_move" if there is more than one:
@@ -116,13 +110,10 @@ const Board = ({ socket, roomNumber, setShowBoard }: boardProps) => {
     socket?.disconnect();
     console.log("I'm leaving");
     dispatch(leaveGame());
+    dispatch(switchToDefaults());
     setShowBoard(false);
-    setRowsStart(-12);
-    setRowsEnd(12);
-    setColsStart(-12);
-    setColsEnd(12);
-    setShowPlayer(false);
     setTimer(1000);
+    setRelaunchToggle(!relaunchToggle);
   };
 
   // ON OPPONENT LEAVING GAME:
@@ -178,20 +169,10 @@ const Board = ({ socket, roomNumber, setShowBoard }: boardProps) => {
         <BoardControls
           timer={timer}
           setTimer={setTimer}
-          rowsStart={rowsStart}
-          rowsEnd={rowsEnd}
-          colsStart={colsStart}
-          colsEnd={colsEnd}
-          setRowsStart={setRowsStart}
-          setRowsEnd={setRowsEnd}
-          setColsStart={setColsStart}
-          setColsEnd={setColsEnd}
           myTurn={myTurn}
           winner={winner}
           sign={sign}
           leaveGameHandler={leaveGameHandler}
-          showPlayer={showPlayer}
-          setShowPlayer={setShowPlayer}
         />
       </div>
     </>

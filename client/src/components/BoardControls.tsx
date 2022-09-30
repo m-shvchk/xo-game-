@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react"
 import GameRecordingControl from "./GameRecordingControl";
 import classes from "./BoardControls.module.css";
 import {PayloadKey} from "../features/gameSlice";
@@ -6,41 +7,26 @@ import {prepareRecording } from "../features/gameSlice";
 
 type BoardControlsProps = {
   setTimer: React.Dispatch<React.SetStateAction<number>>;
-  rowsStart: number;
-  rowsEnd: number;
-  colsStart: number;
-  colsEnd: number;
-  setRowsStart: React.Dispatch<React.SetStateAction<number>>;
-  setRowsEnd: React.Dispatch<React.SetStateAction<number>>;
-  setColsStart: React.Dispatch<React.SetStateAction<number>>;
-  setColsEnd: React.Dispatch<React.SetStateAction<number>>;
   myTurn: boolean;
   winner: { [key: PayloadKey]: number };
   sign: null | 1 | 2;
   leaveGameHandler: (e: React.SyntheticEvent) => void 
-  showPlayer: boolean;
-  setShowPlayer: React.Dispatch<React.SetStateAction<boolean>>;
   timer: number; 
 };
 
 const BoardControls = ({
   timer,  
   setTimer,
-  rowsStart,
-  rowsEnd,
-  colsStart,
-  colsEnd,
-  setRowsStart,
-  setRowsEnd,
-  setColsStart,
-  setColsEnd,
   myTurn,
   sign,
   winner,
   leaveGameHandler,
-  showPlayer,
-  setShowPlayer,
 }: BoardControlsProps) => {
+    const [showPlayer, setShowPlayer] = useState<boolean>(false);
+
+    useEffect(() => {
+        return () => setShowPlayer(false);
+      }, []);
 
   // signal area text (indicates at what point the game is: "panding", "you won", "you lost"):
   let signalAreaText = "";
@@ -93,14 +79,6 @@ const BoardControls = ({
         <GameRecordingControl
           timer={timer}
           setTimer={setTimer}
-          rowsStart={rowsStart}
-          rowsEnd={rowsEnd}
-          colsStart={colsStart}
-          colsEnd={colsEnd}
-          setRowsStart={setRowsStart}
-          setRowsEnd={setRowsEnd}
-          setColsStart={setColsStart}
-          setColsEnd={setColsEnd}
         />
       )}
 

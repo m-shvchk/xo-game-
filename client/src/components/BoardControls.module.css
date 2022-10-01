@@ -12,19 +12,33 @@
     height: 20vh;
     border: 1px solid black;
     border-radius: 10px;
-    display: table;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background-color: #bdbdbb;
-    /* background-color: #07da63;
-      background-color: #ff4122; */
+    box-shadow: 5px 5px 5px #888;    
   }
   
   .boardControls_signalArea p {
-    display: table-cell;
-    vertical-align: middle;
-    text-align: center;
     font-size: 1rem;
     color: white;
+    text-align: center;
     text-shadow: black 1px 0 10px;
+  }
+
+  .boardControls_signalArea_spinner{
+    color: white;
+    filter: drop-shadow(2px 2px 5px black);
+    animation: spin infinite 3s linear;
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
   
   .boardControls_btnContainer {
@@ -43,6 +57,8 @@
     padding: 0.5rem 1rem;
     border: 1px solid black;
     cursor: pointer;
+    box-shadow: 5px 5px 5px #888;    
+
   }
   
   .boardControls_btnContainer_btn:hover,
@@ -50,4 +66,6 @@
     background-color: #888;
     border-color: black;
     color: white;
+    box-shadow: 5px 5px 5px black;    
+
   }

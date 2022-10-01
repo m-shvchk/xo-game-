@@ -96,7 +96,7 @@ const GameRecordingControl = ({
   return (
     <div className={classes.gameRecordContainer}>
       <div className={classes.gameRecordContainer_rangeContainer}>
-        <label htmlFor="speed">Playback speed</label>
+        <label htmlFor="speed">Playback timeout</label>
         <input
           type="range"
           id="speed"

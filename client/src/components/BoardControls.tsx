@@ -4,6 +4,7 @@ import classes from "./BoardControls.module.css";
 import {PayloadKey} from "../features/gameSlice";
 import {useDispatch} from "react-redux";
 import {prepareRecording } from "../features/gameSlice";
+import { ImSpinner } from "react-icons/im"
 
 type BoardControlsProps = {
   setTimer: React.Dispatch<React.SetStateAction<number>>;
@@ -34,7 +35,6 @@ const BoardControls = ({
   let signalAreaText = "";
   let winArr: number[] = [];
   if(winner) winArr = Object.values(winner); // won't be empty if there is a winner;
-  if (!sign) signalAreaText = "PENDING...";
   if (winArr.length > 0 && winArr[0] === sign) {
     signalAreaText = "CONGRATS, YOU WON!";
   }
@@ -78,6 +78,7 @@ const BoardControls = ({
           style={signalAreaStyle}
         >
           <p>{signalAreaText}</p>
+          {!sign && <ImSpinner className={classes.boardControls_signalArea_spinner} size={60}/>}
         </div>
       )}
       {showPlayer && (

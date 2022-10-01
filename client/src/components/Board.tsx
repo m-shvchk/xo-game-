@@ -31,6 +31,7 @@ const Board = ({
 }: boardProps) => {
   
   const [timer, setTimer] = useState<number>(1000); // timeout for highlighting last move;
+  const [opponentLeft, setOpponentLeft] = useState<boolean>(false)
   const dispatch = useDispatch();
 
   const myTurn = useSelector((state: RootState) => {
@@ -114,6 +115,7 @@ const Board = ({
     setShowBoard(false);
     setTimer(1000);
     setRelaunchToggle(!relaunchToggle);
+    setOpponentLeft(false)
   };
 
   // ON OPPONENT LEAVING GAME:
@@ -122,6 +124,7 @@ const Board = ({
       socket.on("opponent_left", () => {
         console.log("opponent left room");
         socket?.disconnect();
+        setOpponentLeft(true)
       });
     }
   }, [socket]);
@@ -173,6 +176,7 @@ const Board = ({
           winner={winner}
           sign={sign}
           leaveGameHandler={leaveGameHandler}
+          opponentLeft={opponentLeft}
         />
       </div>
     </>

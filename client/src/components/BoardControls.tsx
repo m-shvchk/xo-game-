@@ -12,6 +12,7 @@ type BoardControlsProps = {
   sign: null | 1 | 2;
   leaveGameHandler: (e: React.SyntheticEvent) => void 
   timer: number; 
+  opponentLeft: boolean;
 };
 
 const BoardControls = ({
@@ -21,6 +22,7 @@ const BoardControls = ({
   sign,
   winner,
   leaveGameHandler,
+  opponentLeft,
 }: BoardControlsProps) => {
     const [showPlayer, setShowPlayer] = useState<boolean>(false);
 
@@ -39,12 +41,15 @@ const BoardControls = ({
   if (winArr.length > 0 && winArr[0] !== sign) {
     signalAreaText = "GAME OVER, TRY AGAIN";
   }
+  if(winArr.length === 0 && opponentLeft){
+    signalAreaText = "OPPONENT LEFT THE GAME"
+  }
   // signal area color (indicates who's turn):
   let signalAreaStyle = {};
-  if (sign && myTurn && !winArr.length) {
+  if (sign && myTurn && !winArr.length && !opponentLeft) {
     signalAreaStyle = { backgroundColor: "#07da63" };
   }
-  if (sign && !myTurn && !winArr.length) {
+  if (sign && !myTurn && !winArr.length && !opponentLeft) {
     signalAreaStyle = { backgroundColor: "#ff4122" };
   }
 

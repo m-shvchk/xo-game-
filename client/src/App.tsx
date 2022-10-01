@@ -46,6 +46,29 @@ const App = () => {
     });
   }, [socket]);
 
+  useEffect(() => {
+    socket?.on("room_is_full", () => {
+      console.log("room is full");
+    });
+  }, [socket]);
+
+  // const notifyUser = useCallback(
+  //   (e: BeforeUnloadEvent) => {
+  //     if (socket) socket.emit("leave_game", { roomNumber }); // trigger "leave_game" event when page gets reload
+  //     console.log("notifyUser")
+  //   },
+  //   [socket, roomNumber]
+  // );
+
+  // useEffect(() => {
+  //   window.addEventListener("beforeunload", notifyUser); // listen to "beforeunload" event (page refresh)
+  //   return () => {
+  //     window.removeEventListener("beforeunload", notifyUser);
+  //   };
+  // }, [notifyUser]);
+
+  
+
   let buttonContainerContent = (
     <div className={classes.buttonContainer}>
       <form onSubmit={joinChosenRoomHandler}>

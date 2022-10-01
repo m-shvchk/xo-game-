@@ -24,12 +24,13 @@ io.on("connection", (socket) => {
   socket.on("join_room", async (room) => {
     const socketsConnected = await io.in(room).fetchSockets();
     console.log(socketsConnected.length);
-    if (socketsConnected.length < 2 && socketsConnected.length !== 1) socket.join(room);
+    if (socketsConnected.length < 2 && socketsConnected.length !== 1)
+      socket.join(room);
     else if (socketsConnected.length === 1) {
       socket.join(room);
       io.to(socket.id).emit("activate_game", room);
-    }
-    else {
+    } else {
+      io.to(socket.id).emit("room_is_full");
       console.log("the room is full");
       // send "room is full" warning to the socket
     }
@@ -48,15 +49,20 @@ io.on("connection", (socket) => {
       io.to(socket.id).emit("activate_game", room);
     } else {
       queue.push(socket);
-      console.log("inside generate room: ", queue.length) /////////////////////////////
-
+      console.log("inside generate room: ", queue.length); /////////////////////////////
     }
 
-    // logic on user disconnecting (remove from the queue for random players):
     socket.on("disconnecting", () => {
-      queue = queue.filter(item => item.id !== socket.id)
-      console.log("inside disconnection event: ", queue.length) /////////////////////////
+      queue = queue.filter((item) => item.id !== socket.id); // remove from the queue for random players
+      console.log("inside disconnection event: ", queue.length); /////////////////////////
 
+      // notify opponent of disconnection event:
+      let roomsToQuit = socket.rooms; // a set that contains socket id and all rooms the socket is in
+      roomsToQuit.forEach((room) => {
+        if (room !== socket.id) {
+          socket.broadcast.to(room).emit("opponent_left"); 
+        }
+      });
     });
   });
 
@@ -65,12 +71,11 @@ io.on("connection", (socket) => {
   });
 
   socket.on("leave_game", (data) => {
-    console.log("leave game request received")
-    console.log(data.roomNumber)
-    socket.broadcast.to(data.roomNumber).emit("opponent_left"); 
-    console.log("inside leave game event: ", queue.length) //////////////////////////
-
-  })
+    console.log("leave game request received");
+    console.log(data.roomNumber);
+    socket.broadcast.to(data.roomNumber).emit("opponent_left");
+    console.log("inside leave game event: ", queue.length); //////////////////////////
+  });
 });
 
 server.listen(3001, () => {

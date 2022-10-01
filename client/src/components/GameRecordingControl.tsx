@@ -53,8 +53,8 @@ const GameRecordingControl = ({
     } else if (counter > movesTotalNum) {
       clearInterval(timerRef.current);
       setCounter(movesTotalNum);
-    } else if (counter !==0 && movesDispatchedNum < counter) {
-      dispatch(reproduceMoveForward(movesInOrder[counter-1]));
+    } else if (counter !== 0 && movesDispatchedNum < counter) {
+      dispatch(reproduceMoveForward(movesInOrder[counter - 1]));
     } else if (movesDispatchedNum > counter) {
       dispatch(reproduceMoveBack(movesInOrder[counter]));
     }
@@ -62,10 +62,10 @@ const GameRecordingControl = ({
 
   const playbackSpeedHandler = (e: React.SyntheticEvent) => {
     const target = e.target as HTMLInputElement;
-    console.log(target.value)
+    console.log(target.value);
     clearInterval(timerRef.current);
     setInPlay(false);
-    setTimer(parseInt(target.value, 10))
+    setTimer(parseInt(target.value, 10));
   };
 
   const runRecordHandler = (e: React.SyntheticEvent) => {

@@ -46,11 +46,6 @@ const App = () => {
     });
   }, [socket]);
 
-  useEffect(() => {
-    socket?.on("room_is_full", () => {
-      console.log("room is full");
-    });
-  }, [socket]);
 
   // const notifyUser = useCallback(
   //   (e: BeforeUnloadEvent) => {
@@ -66,8 +61,6 @@ const App = () => {
   //     window.removeEventListener("beforeunload", notifyUser);
   //   };
   // }, [notifyUser]);
-
-  
 
   let buttonContainerContent = (
     <div className={classes.buttonContainer}>
@@ -104,6 +97,7 @@ const App = () => {
           setShowBoard={setShowBoard}
           setRelaunchToggle={setRelaunchToggle}
           relaunchToggle={relaunchToggle}
+          setRoomNumber={setRoomNumber}
         />
       )}
     </Layout>

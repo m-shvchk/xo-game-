@@ -13,6 +13,8 @@ import {
 import { adjustBoard, switchToDefaults } from "../features/uiSlice";
 import { MoveMade } from "../features/gameSlice";
 import BoardControls from "./BoardControls";
+import ReactDOM from 'react-dom';
+import ErrorModal from './ErrorModal';
 
 type boardProps = {
   socket: Socket | null;
@@ -20,6 +22,7 @@ type boardProps = {
   setShowBoard: React.Dispatch<React.SetStateAction<boolean>>;
   setRelaunchToggle: React.Dispatch<React.SetStateAction<boolean>>;
   relaunchToggle: boolean;
+  setRoomNumber: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const Board = ({
@@ -28,9 +31,11 @@ const Board = ({
   setShowBoard,
   setRelaunchToggle,
   relaunchToggle,
+  setRoomNumber,
 }: boardProps) => {
   
   const [timer, setTimer] = useState<number>(1000); // timeout for highlighting last move;
+  const [error, setError] = useState<boolean>(false);
   const [opponentLeft, setOpponentLeft] = useState<boolean>(false)
   const dispatch = useDispatch();
 
@@ -129,6 +134,26 @@ const Board = ({
     }
   }, [socket]);
 
+  // ON ROOM IS FULL EVENT:
+  useEffect(() => {
+    socket?.on("room_is_full", () => {
+      console.log("room is full");
+      setError(true);
+    });
+  }, [socket]);
+
+  const closeModalHandler = (e: React.SyntheticEvent) => {
+    setError(false);
+    setShowBoard(false);
+    setRoomNumber("")
+  }
+
+  const closeModalHandlerNative = (e: KeyboardEvent) => {
+    setError(false);
+    setShowBoard(false);
+    setRoomNumber("")
+  }
+
   let rowsLength = Math.abs(rowsStart) + rowsEnd + 1;
   let columnsLength = Math.abs(colsStart) + colsEnd + 1;
 
@@ -163,8 +188,14 @@ const Board = ({
     </div>
   ));
 
+  const modalRoot = document.getElementById("modal") as HTMLElement
+
   return (
     <>
+    {error && ReactDOM.createPortal(
+        <ErrorModal onConfirm={closeModalHandler} onConfirmNative={closeModalHandlerNative}/>,
+        modalRoot
+      )} 
       <div className={classes.appContainer}>
         <div className={classes.boardContainer} onClick={makeMoveHandler}>
           {content}

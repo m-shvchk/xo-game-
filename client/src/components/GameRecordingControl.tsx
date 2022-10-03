@@ -65,11 +65,13 @@ const GameRecordingControl = ({
     console.log(target.value);
     clearInterval(timerRef.current);
     setInPlay(false);
-    setTimer(parseInt(target.value, 10));
+    const targetNumber = parseInt(target.value, 10)
+    setTimer(4000 - targetNumber);
   };
 
   const runRecordHandler = (e: React.SyntheticEvent) => {
     setInPlay(true);
+    setCounter((prev) => prev + 1);
     timerRef.current = setInterval(() => {
       setCounter((prev) => prev + 1);
     }, timer);
@@ -86,24 +88,26 @@ const GameRecordingControl = ({
   };
   const moveBackRecordHandler = (e: React.SyntheticEvent) => {
     clearInterval(timerRef.current);
+    setInPlay(false);
     setCounter((prev) => prev - 1);
   };
   const moveForwardRecordHandler = (e: React.SyntheticEvent) => {
     clearInterval(timerRef.current);
+    setInPlay(false);
     setCounter((prev) => prev + 1);
   };
 
   return (
     <div className={classes.gameRecordContainer}>
       <div className={classes.gameRecordContainer_rangeContainer}>
-        <label htmlFor="speed">Playback timeout</label>
+        <label htmlFor="speed">Playback speed</label>
         <input
           type="range"
           id="speed"
           name="speed"
           min="500"
           max="3500"
-          value={timer}
+          value={4000 - timer}
           step="500"
           onChange={playbackSpeedHandler}
         ></input>
